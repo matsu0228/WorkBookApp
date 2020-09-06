@@ -1,0 +1,18 @@
+{{define "home"}}
+    <!DOCTYPE html>
+    <!-- ライセンス　-->
+    <!--Copyright (c) 2014-2020 AdminLTE.io　All rights reserved.
+        Workbook/web/LICENSE.txt-->
+    <html lang="ja">
+    {{template "head"}}
+    <body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        {{template "nav"}}
+        {{template "sidebar"}}
+        {{template "content" .}}
+        {{template "footer"}}
+    </div>
+    {{template "script"}}
+    </body>
+    </html>
+{{end}}

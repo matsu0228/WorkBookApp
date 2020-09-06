@@ -1,0 +1,109 @@
+{{define "content"}}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">学習</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="">
+                    <div class="card-header">
+                        <h3 class="card-title">{{.Title}}</h3>
+                    </div>
+                    <form class="form-horizontal" action="./workbook_create" method="post">
+                        <div class="card-body">
+                            <div>
+                                <div class="aaa">
+                                    {{range $index,$Content := .Contents}}
+                                        <div class="card" id="question{{inc $index}}" style="display: none">
+                                            <div class="card-header hoge">
+                                                <h3 class="card-title" id="card_title">問{{inc $index}}</h3>
+                                                <div class="card-tools">
+                                                    <button type="button" class="btn btn-tool"
+                                                            data-card-widget="collapse"
+                                                            style="padding-left: 500px;">
+                                                        <i class="fas fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <input type="hidden" id="questionNumber" name="1" value="1">
+                                                <div class="form-group row">
+                                                    <div class="col-sm-10">
+                                                        <p>{{.ProblemStatement}}</p>{{/*問題文*/}}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="checkboxPrimary1">
+                                                            <label for="checkboxPrimary1">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <p>{{.Choice1}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="checkboxPrimary2">
+                                                            <label for="checkboxPrimary2">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <p>{{.Choice2}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="checkboxPrimary3">
+                                                            <label for="checkboxPrimary3">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <p>{{.Choice3}}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="checkboxPrimary4">
+                                                            <label for="checkboxPrimary4">
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-10">
+                                                        <p>{{.Choice4}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/*あとでテキストエリアに変恋　問題回答中はdisplay:noneに変更*/}}
+                                            <input type="hidden" name="Answer{{inc $index}}" value="{{.Answer}}">
+                                            <input type="hidden" name="Explanation{{inc $index}}" value="{{.Explanation}}">
+                                        </div>
+                                    {{end}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <button type="button" id="back" class="btn btn-info float-left" style="display: none" onclick="Back();">戻る</button>
+                            <button type="button" id="next" class="btn btn-info float-right" onclick="Next();">次へ</button>
+                            <button type="button" id="end" class="btn btn-info float-right" style="display: none" onclick="End();">回答</button>
+                            <button type="button" id="end2" class="btn btn-info float-right" style="display: none" onclick="End2();">終了</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}

@@ -1,0 +1,176 @@
+{{define "content"}}
+    <div class="content-wrapper">
+        <div class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1 class="m-0 text-dark">問題作成</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content">
+            <div class="container-fluid">
+                <div class="">
+                    <div class="card-header">
+                        <h3 class="card-title">問題集作成フォーム</h3>
+                    </div>
+                    <form class="form-horizontal" action="./workbook_create" method="post">
+                        <div class="card-body">
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-2 col-form-label">タイトル</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputEmail3" name="title" placeholder="タイトルを入力して下さい">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputEmail3" class="col-sm-2 col-form-label">オプション</label>
+                                <div style="margin-left: 10px;">
+                                    <button type="button" class="btn btn-success" id="workbook_create_option_open"
+                                            onclick="OpenSection('workbook_create_option_open','workbook_create_option_close','workbook_create_option');">
+                                        表示
+                                    </button>
+                                    <button type="button" class="btn btn-success" id="workbook_create_option_close"
+                                            onclick="CloseSection('workbook_create_option_open','workbook_create_option_close','workbook_create_option');"
+                                            style="display: none;">非表示
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="workbook_create_option" style="display: none;">
+                                <div class="form-group row">
+                                    <label for="inputEmail3" class="col-sm-2 col-form-label">出題数</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="" placeholder="20" name="numberOfQuestions">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="inputEmail3" class="col-sm-2 col-form-label">シャッフル</label>
+                                    <div class="col-md-1">
+                                        <select class="form-control select2 select2-hidden-accessible"
+                                                style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                aria-hidden="true" name="shuffle">
+                                            <option data-select2-id="52"><font
+                                                        style="vertical-align: inherit;"><font
+                                                            style="vertical-align: inherit;">OFF</font></font>
+                                            </option>
+                                            <option data-select2-id="51"><font
+                                                        style="vertical-align: inherit;"><font
+                                                            style="vertical-align: inherit;">ON</font></font>
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--問題本文-->
+                            <div>
+                                <div class="form-group row">
+                                    <label for="inputEmail3" class="col-sm-2 col-form-label">設問</label>
+                                    <div style="margin-left: 10px;">
+                                        <button type="button" class="btn btn-primary" id="workbook_create_option_open"
+                                                onclick="CloneElement();">
+                                            追加
+                                        </button>
+                                        <button type="button" class="btn btn-danger" id="workbook_create_option_close"
+                                                onclick="DeleteElement();" style="margin-left: 10px;">
+                                            削除
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="aaa">
+                                    <div class="card collapsed-card" id="test">
+                                        <div class="card-header hoge">
+                                            <h3 class="card-title" id="card_title">問1</h3>
+                                            <div class="card-tools">
+                                                {{/*修正必要*/}}
+                                                {{/*<a class="btn btn-tool a" data-card-widget="collapse"></a>*/}}
+                                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                                    <i class="fas fa-plus"></i>
+                                                </button>
+                                                {{/*<div class=""><i class="fas fa-plus"></i></div>*/}}
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <input type="hidden" id="questionNumber" name="1" value="1">
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">問題文</label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" name="1" id="AAA"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">選択肢1</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="answer1"
+                                                           placeholder=""
+                                                           name="1">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">選択肢2</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="answer2"
+                                                           placeholder=""
+                                                           name="1">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">選択肢3</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="answer3"
+                                                           placeholder=""
+                                                           name="1">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">選択肢4</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="answer4"
+                                                           placeholder=""
+                                                           name="1">
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">正解</label>
+                                                <div class="col-md-3">
+                                                    <select class="form-control select2 select2-hidden-accessible"
+                                                            style="width: 100%;" data-select2-id="1" tabindex="-1"
+                                                            aria-hidden="true" name="1" id="BBB">
+                                                        <option data-select2-id="51"><font
+                                                                    style="vertical-align: inherit;"><font
+                                                                        style="vertical-align: inherit;">選択肢1</font></font>
+                                                        </option>
+                                                        <option data-select2-id="52"><font
+                                                                    style="vertical-align: inherit;"><font
+                                                                        style="vertical-align: inherit;">選択肢2</font></font>
+                                                        </option>
+                                                        <option data-select2-id="53"><font
+                                                                    style="vertical-align: inherit;"><font
+                                                                        style="vertical-align: inherit;">選択肢3</font></font>
+                                                        </option>
+                                                        <option data-select2-id="53"><font
+                                                                    style="vertical-align: inherit;"><font
+                                                                        style="vertical-align: inherit;">選択肢4</font></font>
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="inputEmail3" class="col-sm-2 col-form-label">解説</label>
+                                                <div class="col-sm-10">
+                                                    <textarea class="form-control" name="1" id="AAA"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <button type="submit" class="btn btn-info">保存</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
