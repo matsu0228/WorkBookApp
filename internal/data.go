@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"github.com/astaxie/beego"
 	"html/template"
 	"net/http"
 )
@@ -41,9 +42,23 @@ type Content struct {
 	Explanation      string
 }
 
+// CallbackController コールバックコントローラ
+type CallbackController struct {
+	beego.Controller
+}
+
+// CallbackRequest コールバックリクエスト
+type CallbackRequest struct {
+	Code  string `form:"code"`
+	State string `form:"state"`
+}
+
 type Cookies []*http.Cookie
 
 const (
+
+	//
+
 	//HTML各パーツ
 	head                      = "web/template/includeParts/head.html"
 	script                    = "web/template/includeParts/script.html"
@@ -58,6 +73,8 @@ const (
 	workbook_create_content   = "web/template/includeParts/workbook_create_content.html"
 	workbook_folder           = "web/template/includeParts/workbook_folder.html"
 	workbook_learning_content = "web/template/includeParts/workbook_learning_content.html"
+	workbook_share            = "web/template/includeParts/workbook_share.html"
+	workbook_question         = "web/template/includeParts/workbook_question.html"
 
 	//showdata用(HTML名前)
 	show_login          = "login"
@@ -90,7 +107,7 @@ const (
 	f_book_id   = "bookId"
 
 	//datastore関係
-	project_id = "quiz-283808"
+	project_id  = "quiz-283808"
 	project_key = "./quiz-283808-424072cf23ec.json"
 )
 
@@ -103,6 +120,8 @@ var (
 	pageWorkbookCreate   = []string{head, script, home, workbook_create_content, sidebar, nav, footer}
 	pageWorkbookFolder   = []string{head, script, home, workbook_folder, sidebar, nav, footer}
 	pageWorkbookLearning = []string{head, script, home, workbook_learning_content, sidebar, nav, footer}
+	pageWorkbookShare    = []string{head, script, home, workbook_share, sidebar, nav, footer}
+	pageWorkbookQuestion = []string{head, script, home, workbook_question, sidebar, nav, footer}
 
 	//独自関数（フロント側）
 	FuncMap = template.FuncMap{

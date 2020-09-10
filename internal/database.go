@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"Workbook/internal/pkg"
 	"cloud.google.com/go/datastore"
 	"context"
 	"google.golang.org/api/iterator"
@@ -34,7 +33,7 @@ func CheckUserLogin(user UserAccount, password string) (bool, UserAccount) {
 	var tmp UserAccount
 	_, err := it.Next(&tmp)
 	if err == nil {
-		if pkg.CompareHashAndFiled(tmp.HashPassword, password) {
+		if CompareHashAndFiled(tmp.HashPassword, password) {
 			return true, tmp
 		}
 		return false, user

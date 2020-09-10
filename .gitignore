@@ -1,0 +1,11 @@
+#datastore接続用ファイル(キー)
+quiz-283808-424072cf23ec.json
+
+#自動生成ファイル
+go.mod
+go.sum
+cmd/cmd.exe
+.idea/
+
+#メモ
+開発ルール

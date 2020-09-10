@@ -15,14 +15,14 @@
                     <div class="card-header">
                         <h3 class="card-title">{{.Title}}</h3>
                     </div>
-                    <form class="form-horizontal" action="./workbook_create" method="post">
+                    <form class="form-horizontal" action="#" method="post">
                         <div class="card-body">
                             <div>
                                 <div class="aaa">
                                     {{range $index,$Content := .Contents}}
-                                        <div class="card" id="question{{inc $index}}" style="display: none">
+                                        <div class="card" id="question{{Increment $index}}" style="display: none">
                                             <div class="card-header hoge">
-                                                <h3 class="card-title" id="card_title">問{{inc $index}}</h3>
+                                                <h3 class="card-title" id="card_title">問{{Increment $index}}</h3>
                                                 <div class="card-tools">
                                                     <button type="button" class="btn btn-tool"
                                                             data-card-widget="collapse"
@@ -88,8 +88,8 @@
                                                 </div>
                                             </div>
                                             {{/*あとでテキストエリアに変恋　問題回答中はdisplay:noneに変更*/}}
-                                            <input type="hidden" name="Answer{{inc $index}}" value="{{.Answer}}">
-                                            <input type="hidden" name="Explanation{{inc $index}}" value="{{.Explanation}}">
+                                            <input type="hidden" name="Answer{{Increment $index}}" value="{{.Answer}}">
+                                            <input type="hidden" name="Explanation{{Increment $index}}" value="{{.Explanation}}">
                                         </div>
                                     {{end}}
                                 </div>

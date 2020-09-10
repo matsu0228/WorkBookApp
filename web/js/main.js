@@ -6,7 +6,7 @@ $(function () {
     if (typeof $.cookie('userName') !== 'undefined') {
         let userName = $.cookie('userName');
         let userID = $.cookie('userId');
-        let profileImg = $.cookie('profileImg');
+        let profileImg = $.cookie('image');
 
         //サイドバー情報組み込み
         $('.image').children('img').attr('src', 'https://storage.googleapis.com/' + profileImg);

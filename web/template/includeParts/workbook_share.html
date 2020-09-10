@@ -4,34 +4,16 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">学習</h1>
+                        <h1 class="m-0 text-dark">共有</h1>
                     </div>
                 </div>
             </div>
         </div>
         <div class="content">
             <div class="container-fluid">
-                {{/* <div class="">
-                    <div class="card-header">
-                        <h3 class="card-title">問題集一覧</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            {{range $workbook :=.}}
-                                <div class="form-group row">
-                                    <label for="inputEmail3" class="col-sm-2 col-form-label">タイトル</label>
-                                    <div class="col-sm-10 workbook_learning_start">
-                                        <a href="/workbook/learning/page">{{$workbook.Title}}</a>
-                                        <input type="hidden" name="" value="{{$workbook.BookId}}">
-                                    </div>
-                                </div>
-                            {{end}}
-                        </form>
-                    </div>
-                </div>*/}}
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">問題集一覧</h3>
+                        <h3 class="card-title">最新の問題集</h3>
                         <div class="card-tools">
                             <ul class="pagination pagination-sm float-right">
                                 <li class="page-item"><a class="page-link" href="#">«</a></li>
@@ -52,17 +34,13 @@
                                 <th style="width: 100px"></th>
                             </tr>
                             </thead>
-                            {{range $index,$workbook :=.}}
-                                <tbody>
-                                <tr>
-                                    <td>{{Increment $index}}</td>
-                                    <td>{{$workbook.Title}}</td>
-                                    <td>あああ</td>
-                                    <td><a href="/workbook/learning/page">開始</a></td>
-                                    <input type="hidden" name="" value="{{$workbook.BookId}}">
-                                </tr>
-                                </tbody>
-                            {{end}}
+                            <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
