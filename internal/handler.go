@@ -13,6 +13,10 @@ import (
 /*ページ表示用ハンドラ*/
 //ログインページ
 func ShowLoginPage(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
 	ReadTemplate(w, pageLogin, show_login, nil)
 }
 

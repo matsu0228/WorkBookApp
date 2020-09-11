@@ -2,8 +2,9 @@ package main
 
 import (
 	"Workbook/internal"
+	"log"
 	"net/http"
-	"google.golang.org/appengine"
+	"os"
 )
 
 func main() {
@@ -39,12 +40,15 @@ func main() {
 	http.HandleFunc("/workbook/learning/page", internal.LearningWorkbook)
 	http.HandleFunc("/workbook/create", internal.CreateWorkBook)
 
-	//サーバー起動(ローカルテスト時)
-	//server := http.Server{
-	//	Addr: "127.0.0.1:8080",
-	//}
-	//server.ListenAndServe()
+	//サーバ起動
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
 
-	//GAEでのプログラム実行
-	appengine.Main()
+	log.Printf("Listening on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal(err)
+	}
 }

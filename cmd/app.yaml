@@ -1,14 +1,50 @@
 # Goランタイム環境。
 runtime: go113
 
-# 使用するGoランタイム環境のバージョン
-api_version: go1.13
-env: standars
-threadsafe: true
+#サービス名
+service: Workbook
+
+# インスタンス設定
 instance_class: F1
+
+#スケーリング要素
+#automatic_scaling
+
+#静的ファイルのキャッシュ期間
+#デフォルトは１０分
+#default_expiration:
+
+#エントリーポイント
+#entrypoint:
+
+#環境変数
+#env_variables:
+  #BUCKET_NAME: ""
+
+#エラー関係
+#error_handlers:
+  #-file: ファイル名
+  #- error_code: over_quota
+  #    file: over_quota.html
+
+#ウォームアップリクエスト（なにに使うの？）
+#inbound_services:
+  #- warmup
+
+#main.go絶対パス
+main: ./cmd
 
 #アクセス振り分け
 handlers:
-  - url: /
+- url: /web/js/
+  static_dir: web/js/
+
+- url: /web/css/
+  static_dir: web/css/
+
+- url: /web/img/
+  static_dir: web/img/
+
+- url: /
+  secure: always
   script: auto
-  secure: alwas
