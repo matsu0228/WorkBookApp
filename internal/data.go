@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"github.com/astaxie/beego"
 	"html/template"
 	"net/http"
 )
@@ -42,17 +41,6 @@ type Content struct {
 	Explanation      string
 }
 
-// CallbackController コールバックコントローラ
-type CallbackController struct {
-	beego.Controller
-}
-
-// CallbackRequest コールバックリクエスト
-type CallbackRequest struct {
-	Code  string `form:"code"`
-	State string `form:"state"`
-}
-
 type Cookies []*http.Cookie
 
 const (
@@ -60,6 +48,7 @@ const (
 	//
 
 	//HTML各パーツ
+	index                     = "web/template/index.html"
 	head                      = "web/template/includeParts/head.html"
 	script                    = "web/template/includeParts/script.html"
 	home_content              = "web/template/includeParts/home_content.html"
@@ -113,6 +102,7 @@ const (
 
 var (
 	//ページ本体
+	pageIndex            = []string{index}
 	pageLogin            = []string{head, script, login}
 	pageAccountCreate    = []string{head, script, account_create}
 	pageHome             = []string{head, script, home, home_content, sidebar, nav, footer}

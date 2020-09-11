@@ -1,32 +1,3 @@
-#テストデプロイ18
-
-#スケーリング要素
-#automatic_scaling
-
-#静的ファイルのキャッシュ期間
-#デフォルトは１０分
-#default_expiration:
-
-#エントリーポイント
-#entrypoint:
-
-#環境変数
-#env_variables:
-#BUCKET_NAME: ""
-
-#エラー関係
-#error_handlers:
-#-file: ファイル名
-#- error_code: over_quota
-#    file: over_quota.html
-
-#ウォームアップリクエスト（なにに使うの？）
-#inbound_services:
-#- warmup
-
-#main.go絶対パス
-#main: ./cmd
-
 # Goランタイム環境。
 runtime: go113
 
@@ -38,15 +9,6 @@ instance_class: F1
 
 #アクセス振り分け
 handlers:
-  - url: /web/js/
-    static_dir: web/js/
-
-  - url: /web/css/
-    static_dir: web/css/
-
-  - url: /web/img/
-    static_dir: web/img/
-
   - url: /
     secure: always
     script: auto

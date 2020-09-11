@@ -14,8 +14,10 @@ func main() {
 	http.Handle("/web/img/", http.StripPrefix("/web/img/", http.FileServer(http.Dir("web/img/"))))
 
 	//ハンドラ登録
+	//アプリ紹介ページ
+	http.HandleFunc("/", internal.IndexShowPage)
 	//ユーザ認証関係
-	http.HandleFunc("/", internal.ShowLoginPage)
+	http.HandleFunc("/login/page", internal.ShowLoginPage)
 	http.HandleFunc("/login", internal.ValidateLoginData)
 	http.HandleFunc("/login/google", internal.ShowLoginPage)
 	http.HandleFunc("/login/facebook", internal.ValidateLoginData)
@@ -41,6 +43,13 @@ func main() {
 	http.HandleFunc("/workbook/create", internal.CreateWorkBook)
 
 	//サーバ起動
+	//ローカル用
+	//server := http.Server{
+	//	Addr: "127.0.0.1:8080",
+	//}
+	//server.ListenAndServe()
+
+	//GAE用
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

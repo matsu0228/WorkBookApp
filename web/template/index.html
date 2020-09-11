@@ -1,0 +1,150 @@
+{{define "index"}}
+  {{/*テンプレートの権利は購入済み*/}}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>Workbook</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+  <link href="/web/img/favicon.png" rel="icon">
+  <link href="/web/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+  <link href="/web/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/web/css/index.css" rel="stylesheet">
+</head>
+<body>
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        <a class="navbar-brand" href="#"><b>Workbook</b></a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/login/page" class="">ログイン</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div id="headerwrap">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6">
+          <h1>アプリ紹介文テスト・・・</h1>
+          <form class="form-inline" action="/account/create/page" method="get">
+            <button type="submit" class="btn btn-warning btn-lg">アカウント作成！</button>
+          </form>
+        </div>
+        <div class="col-lg-6">
+          <img class="img-responsive" src="/web/img/ipad-hand.png" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row mt centered">
+      <div class="col-lg-6 col-lg-offset-3">
+        <h1>テスト<br/>テストテストテスト</h1>
+        <h3>aaaaaaaaaaaaaaaaaa</h3>
+      </div>
+    </div>
+    <div class="row mt centered">
+      <div class="col-lg-4">
+        <img src="/web/img/ser01.png" width="180" alt="">
+        <h4>1 - テスト</h4>
+        <p>aaaaaaaaaaaaaaaaaaa</p>
+      </div>
+      <div class="col-lg-4">
+        <img src="/web/img/ser02.png" width="180" alt="">
+        <h4>2 - テスト</h4>
+        <p>aaaaaaaaa</p>
+      </div>
+      <div class="col-lg-4">
+        <img src="/web/img/ser03.png" width="180" alt="">
+        <h4>3 - テスト</h4>
+        <p>aaaaaaaaaaaaaa</p>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row mt centered">
+      <div class="col-lg-6 col-lg-offset-3">
+        <h1>テスト</h1>
+        <h3>aaaaaaaaaaaaaaaaaa</h3>
+      </div>
+    </div>
+    <div class="row mt centered">
+      <div class="col-lg-6 col-lg-offset-3">
+        <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+          <ol class="carousel-indicators">
+            <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+            <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+          </ol>
+          <div class="carousel-inner">
+            <div class="item active">
+              <img src="/web/img/p01.png" alt="">
+            </div>
+            <div class="item">
+              <img src="/web/img/p02.png" alt="">
+            </div>
+            <div class="item">
+              <img src="/web/img/p03.png" alt="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="contact">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <h2 class="centered">Contact Us</h2>
+          <form class="contact-form php-mail-form" role="form" action="contactform/contactform.php" method="POST">
+            <div class="form-group">
+              <input type="name" name="name" class="form-control" id="contact-name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" >
+              <div class="validate"></div>
+            </div>
+            <div class="form-group">
+              <input type="email" name="email" class="form-control" id="contact-email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email">
+              <div class="validate"></div>
+            </div>
+            <div class="form-group">
+              <input type="text" name="subject" class="form-control" id="contact-subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject">
+              <div class="validate"></div>
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" name="message" id="contact-message" placeholder="Your Message" rows="5" data-rule="required" data-msg="Please write something for us"></textarea>
+              <div class="validate"></div>
+            </div>
+            <div class="loading"></div>
+            <div class="error-message"></div>
+            <div class="sent-message">Your message has been sent. Thank you!</div>
+            <div class="form-send">
+              <button type="submit" class="btn btn-large"disabled>Send Message</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="copyrights">
+    <div class="container">
+      <div class="credits">
+      </div>
+    </div>
+  </div>
+  <script src="/web/js/jquery.min.js"></script>
+  <script src="/web/js/bootstrap.min.js"></script>
+  <script src="/web/js/easing.min.js"></script>
+  <script src="/web/js/index.js"></script>
+</body>
+</html>
+{{end}}

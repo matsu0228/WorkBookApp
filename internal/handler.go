@@ -11,12 +11,17 @@ import (
 )
 
 /*ページ表示用ハンドラ*/
-//ログインページ
-func ShowLoginPage(w http.ResponseWriter, r *http.Request) {
+//アプリ紹介ページ
+func IndexShowPage(w http.ResponseWriter, r *http.Request){
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
 	}
+	ReadTemplate(w, pageIndex, "index", nil)
+}
+
+//ログインページ
+func ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 	ReadTemplate(w, pageLogin, show_login, nil)
 }
 
