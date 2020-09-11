@@ -107,7 +107,7 @@ const (
 	f_book_id   = "bookId"
 
 	//datastore関係
-	project_id  = "quiz-283808"
+	project_id  = "apptestgo0000"
 	project_key = "./quiz-283808-424072cf23ec.json"
 )
 

@@ -1,0 +1,14 @@
+# Goランタイム環境。
+runtime: go113
+
+# 使用するGoランタイム環境のバージョン
+api_version: go1.13
+env: standars
+threadsafe: true
+instance_class: F1
+
+#アクセス振り分け
+handlers:
+  - url: /
+  script: auto
+  secure: alwas

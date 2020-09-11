@@ -3,6 +3,7 @@ package main
 import (
 	"Workbook/internal"
 	"net/http"
+	"google.golang.org/appengine"
 )
 
 func main() {
@@ -38,45 +39,12 @@ func main() {
 	http.HandleFunc("/workbook/learning/page", internal.LearningWorkbook)
 	http.HandleFunc("/workbook/create", internal.CreateWorkBook)
 
-	//サーバー起動
-	server := http.Server{
-		Addr: "127.0.0.1:8080",
-	}
-	server.ListenAndServe()
-}
+	//サーバー起動(ローカルテスト時)
+	//server := http.Server{
+	//	Addr: "127.0.0.1:8080",
+	//}
+	//server.ListenAndServe()
 
-//func main() {
-//	mux := http.NewServeMux()
-//	mux.HandleFunc("/login", LoginHandler)
-//	mux.HandleFunc("/loginr", LoginRHandler)
-//	log.Println("Server has started")
-//	http.ListenAndServe(":5001", mux)
-//}
-//
-//func LoginHandler (w http.ResponseWriter, r *http.Request) {
-//	var url = conf.AuthCodeURL("yourStateUUID", oauth2.AccessTypeOffline)
-//	fmt.Fprintf(w, "Visit here : %s", url)
-//}
-//
-//func LoginRHandler(w http.ResponseWriter, r *http.Request) {
-//	code := r.URL.Query()["code"]
-//	if code == nil ||  len(code) == 0 {
-//		fmt.Fprint(w,"Invalid Parameter")
-//	}
-//	ctx := context.Background()
-//	tok, err := conf.Exchange(ctx, code[0])
-//	if err != nil {
-//		fmt.Fprintf(w,"OAuth Error:%v", err)
-//	}
-//	client := conf.Client(ctx, tok)
-//	svr, err := oauthapi.New(client)
-//	ui, err := svr.Userinfo.Get().Do()
-//	if err != nil {
-//		fmt.Fprintf(w,"OAuth Error:%v", err)
-//	} else {
-//		fmt.Fprintf(w, "Your are logined as : %s",  ui.Email)
-//		fmt.Fprintf(w, "Your are logined as : %s",  ui.Name)
-//		fmt.Fprintf(w, "Your are logined as : %s",  ui.Id)
-//	}
-//}
-//var conf =internal.GoogleGetConnect()
+	//GAEでのプログラム実行
+	appengine.Main()
+}

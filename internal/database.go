@@ -4,7 +4,6 @@ import (
 	"cloud.google.com/go/datastore"
 	"context"
 	"google.golang.org/api/iterator"
-	"google.golang.org/api/option"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -12,7 +11,7 @@ import (
 
 //クライアント作成
 func NewClient(ctx context.Context) (*datastore.Client, bool) {
-	client, err := datastore.NewClient(ctx, project_id, option.WithCredentialsFile(project_key))
+	client, err := datastore.NewClient(ctx, project_id)
 	if err != nil {
 		return nil, false
 	}
