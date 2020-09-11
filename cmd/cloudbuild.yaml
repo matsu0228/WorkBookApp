@@ -10,9 +10,9 @@ instance_class: F1
 
 #自動デプロイ構成
 steps:
-  -name: 'gcr.io/cloud-builders/gcloud'
-  id: 'deploy'
-  args: ['app','deploy']
+  -name: '"gcr.io/cloud-builders/gcloud"
+  args: ["app","deploy"]
+  timeout: "1600s"
 
 #スケーリング要素
 #automatic_scaling
