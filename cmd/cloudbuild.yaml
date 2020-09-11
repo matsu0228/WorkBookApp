@@ -10,7 +10,7 @@ instance_class: F1
 
 #自動デプロイ構成
 steps:
-  -name: '"gcr.io/cloud-builders/gcloud"
+  -name: "gcr.io/cloud-builders/gcloud"
   args: ["app","deploy"]
   timeout: "1600s"
 
