@@ -10,8 +10,8 @@ instance_class: F1
 
 #自動デプロイ構成
 steps:
-  -name: "gcr.io/cloud-builders/gcloud"
-   args: ["app","deploy"]
+  -name: 'gcr.io/cloud-builders/gcloud'
+    args: ["app","deploy"]
   timeout: "1600s"
 
 #スケーリング要素
@@ -39,7 +39,7 @@ steps:
   #- warmup
 
 #main.go絶対パス
-main: ./cmd
+#main: ./cmd
 
 #アクセス振り分け
 handlers:
