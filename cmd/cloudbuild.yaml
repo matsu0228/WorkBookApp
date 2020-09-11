@@ -8,6 +8,21 @@ service: Workbook
 # インスタンス設定
 instance_class: F1
 
+#アクセス振り分け
+handlers:
+  - url: /web/js/
+    static_dir: web/js/
+
+  - url: /web/css/
+    static_dir: web/css/
+
+  - url: /web/img/
+    static_dir: web/img/
+
+  - url: /
+    secure: always
+    script: auto
+
 #自動デプロイ構成
 steps:
 - name: 'gcr.io/cloud-builders/gcloud'
@@ -41,17 +56,3 @@ timeout: 1600s
 #main.go絶対パス
 #main: ./cmd
 
-#アクセス振り分け
-handlers:
-- url: /web/js/
-  static_dir: web/js/
-
-- url: /web/css/
-  static_dir: web/css/
-
-- url: /web/img/
-  static_dir: web/img/
-
-- url: /
-  secure: always
-  script: auto
