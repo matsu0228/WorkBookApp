@@ -4,30 +4,5 @@ steps:
   args: ["app","deploy","cmd/app.yaml"]
 timeout: 1600s
 
-#スケーリング要素
-#automatic_scaling
 
-#静的ファイルのキャッシュ期間
-#デフォルトは１０分
-#default_expiration:
-
-#エントリーポイント
-#entrypoint:
-
-#環境変数
-#env_variables:
-  #BUCKET_NAME: ""
-
-#エラー関係
-#error_handlers:
-  #-file: ファイル名
-  #- error_code: over_quota
-  #    file: over_quota.html
-
-#ウォームアップリクエスト（なにに使うの？）
-#inbound_services:
-  #- warmup
-
-#main.go絶対パス
-#main: ./cmd
 
