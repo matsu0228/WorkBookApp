@@ -1,4 +1,4 @@
-#テストデプロイ4
+#テストデプロイ5
 # Goランタイム環境。
 runtime: go113
 
@@ -7,6 +7,12 @@ service: Workbook
 
 # インスタンス設定
 instance_class: F1
+
+#自動デプロイ構成
+steps:
+  -name: 'gcr.io/cloud-builders/gcloud'
+  id: 'deploy'
+  args: ['app','deploy']
 
 #スケーリング要素
 #automatic_scaling
