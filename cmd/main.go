@@ -49,7 +49,7 @@ func main() {
 	//}
 	//server.ListenAndServe()
 
-	//GAE用
+	//GAE用(サーバ起動)
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
