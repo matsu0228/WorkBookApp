@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"Workbook/internal/pkg"
+	"WorkBookApp/internal/pkg"
 	"context"
 	"fmt"
 	"golang.org/x/oauth2"

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Workbook/internal"
+	"WorkBookApp/internal"
 	"log"
 	"net/http"
 	"os"
@@ -44,10 +44,10 @@ func main() {
 
 	//サーバ起動
 	//ローカル用
-	server := http.Server{
-		Addr: "127.0.0.1:8080",
-	}
-	server.ListenAndServe()
+	//server := http.Server{
+	//	Addr: "127.0.0.1:8080",
+	//}
+	//server.ListenAndServe()
 
 	//GAE用(サーバ起動)
 	port := os.Getenv("PORT")
