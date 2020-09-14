@@ -7,6 +7,17 @@ Workbook
 # DEMO(実際にツールがどのように動作するか)
 
 # Usage(ツールを動かす為の説明)
+    cloud.google.com/go/datastore
+    cloud.google.com/go/storage
+    github.com/garyburd/go-oauth
+    github.com/pkg/errors
+    golang.org/x/crypto
+    golang.org/x/net
+    golang.org/x/oauth2
+    golang.org/x/sys
+    google.golang.org/api
+    google.golang.org/genproto
+    google.golang.org/grpc
 
 # Features("Workbook"のセールスポイントや差別化などを説明する)
 
