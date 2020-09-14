@@ -1,4 +1,4 @@
-package internal
+package pkg
 
 import (
 	"cloud.google.com/go/datastore"
@@ -9,8 +9,10 @@ import (
 	"strconv"
 )
 
-//クライアント作成
+/*DataStore関連関数*/
+//NewClient　はDataStoreのクライアントを生成する関数
 func NewClient(ctx context.Context) (*datastore.Client, bool) {
+	var client *datastore.Client
 	client, err := datastore.NewClient(ctx, project_id)
 	if err != nil {
 		return nil, false
@@ -18,7 +20,7 @@ func NewClient(ctx context.Context) (*datastore.Client, bool) {
 	return client, true
 }
 
-//ログインチェック
+//CheckUserLogin はメールアドレスとパスワードを比較して、booleanとユーザアカウント情報を返す関数
 func CheckUserLogin(user UserAccount, password string) (bool, UserAccount) {
 	ctx := context.Background()
 	client, flg := NewClient(ctx)
@@ -41,7 +43,7 @@ func CheckUserLogin(user UserAccount, password string) (bool, UserAccount) {
 	}
 }
 
-//アカウント作成
+//SaveUserAccount はユーザIDを主キーにして、データを登録する関数
 func SaveUserAccount(user UserAccount) bool {
 	ctx := context.Background()
 	client, flg := NewClient(ctx)
@@ -70,7 +72,7 @@ func SaveUserAccount(user UserAccount) bool {
 	}
 }
 
-//アカウント更新
+//UpdateUserAccount　は登録されているユーザ情報を更新する関数
 func UpdateUserAccount(cookie *http.Cookie, updateAccount UserAccount) (bool, UserAccount) {
 	ctx := context.Background()
 	client, flg := NewClient(ctx)
@@ -89,7 +91,7 @@ func UpdateUserAccount(cookie *http.Cookie, updateAccount UserAccount) (bool, Us
 
 	var tmp UserAccount
 	if err := tx.Get(Key, &tmp); err != nil {
-		return false,tmp
+		return false, tmp
 	}
 
 	rv := reflect.ValueOf(updateAccount)
@@ -121,7 +123,7 @@ func UpdateUserAccount(cookie *http.Cookie, updateAccount UserAccount) (bool, Us
 	return true, tmp
 }
 
-//アカウント削除
+//DeleteUserAccount　は登録しているユーザ情報を削除する関数
 func DeleteUserAccount(cookie *http.Cookie) bool {
 	ctx := context.Background()
 	client, flg := NewClient(ctx)
@@ -138,29 +140,7 @@ func DeleteUserAccount(cookie *http.Cookie) bool {
 	return true
 }
 
-//アカウント検索
-func SelectAccount(user UserAccount) bool {
-	ctx := context.Background()
-	client, flg := NewClient(ctx)
-	if flg == false {
-		return false
-	}
-	defer client.Close()
-
-	query := datastore.NewQuery("user_account").
-		Filter("UserId =", user.UserId).
-		Filter("Mail =", user.Mail)
-
-	it := client.Run(ctx, query)
-	var tmp UserAccount
-	_, err := it.Next(&tmp)
-	if err != nil {
-		return false
-	}
-	return true
-}
-
-//問題集作成
+//CreateWorkbook　は４択問題集をbookIDを主キーにデータを登録する関数
 func CreateWorkbook(book WorkbookContent) bool {
 	//クライアント作成
 	ctx := context.Background()
@@ -193,7 +173,7 @@ func CreateWorkbook(book WorkbookContent) bool {
 	}
 }
 
-//問題集検索
+//SelectWorkbooks は問題集のタイトル,IDを取得して,boolean,構造体の配列を返す関数
 func SelectWorkbooks(id string) (bool, []WorkbookContent) {
 	ctx := context.Background()
 	client, flg := NewClient(ctx)
@@ -221,6 +201,7 @@ func SelectWorkbooks(id string) (bool, []WorkbookContent) {
 	return true, workbooks
 }
 
+//TODO:記載予定
 func SelectWorkbook(id string) (bool, WorkbookContent) {
 	ctx := context.Background()
 	var workbook WorkbookContent
