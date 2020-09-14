@@ -1,8 +1,7 @@
 package main
 
 import (
-	"WorkBookApp/internal/api"
-	"WorkBookApp/internal/database"
+	"WorkBookApp/internal"
 	"cloud.google.com/go/datastore"
 	"cloud.google.com/go/storage"
 	"context"
@@ -26,16 +25,16 @@ func main() {
 		}
 	}()
 
-	log.Printf("api起動完了: http:localhost%s", api.PORT)
+	log.Printf("api起動完了: http:localhost%s", internal.PORT)
 }
 
 func run() (*datastore.Client, *storage.Client, error) {
 	ctx := context.Background()
-	DataStoreClient, err := database.DataStoreNewClient(ctx)
+	DataStoreClient, err := internal.DataStoreNewClient(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
-	StoregaeClient, err := api.CloudStoreNewClient(ctx)
+	StoregaeClient, err := internal.CloudStoreNewClient(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -45,7 +44,7 @@ func run() (*datastore.Client, *storage.Client, error) {
 		port = "8080"
 		log.Printf("Defaulting to port %s", port)
 	}
-	router := api.Route()
+	router := internal.Route()
 	log.Printf("Listening on port %s", port)
 	return DataStoreClient, StoregaeClient, http.ListenAndServe(":"+port, router)
 }

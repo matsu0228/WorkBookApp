@@ -1,7 +1,6 @@
-package api
+package internal
 
 import (
-	"WorkBookApp/internal/database"
 	"context"
 	"fmt"
 	"golang.org/x/oauth2"
@@ -57,7 +56,7 @@ func ShowWorkbookPage(w http.ResponseWriter, r *http.Request) {
 //学習フォルダページ
 func ShowWorkbookFolderPage(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
-		if ok, workbooks := database.SelectWorkbooks(cookies[2].Value); ok {
+		if ok, workbooks := SelectWorkbooks(cookies[2].Value); ok {
 			ReadTemplateToIncludeFunction(w, PageWorkbookFolder, Show_home, workbooks, FuncMap)
 		} else {
 			ErrorHandling("")
@@ -83,7 +82,7 @@ func ShowWorkbookQuestion(w http.ResponseWriter, r *http.Request) {
 func LearningWorkbook(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		bookId := r.FormValue(F_book_id)
-		if ok, workbook := database.SelectWorkbook(bookId); ok {
+		if ok, workbook := SelectWorkbook(bookId); ok {
 			ReadTemplateToIncludeFunction(w, PageWorkbookLearning, Show_home, workbook, FuncMap)
 		} else {
 			ErrorHandling("")
@@ -108,7 +107,7 @@ func ValidateLoginData(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue(F_password)
 
 	//データベースに問い合わせ
-	if ok, user := database.CheckUserLogin(user, password); ok {
+	if ok, user := CheckUserLogin(user, password); ok {
 		if ok, c := CreateCookie(w, r, user); ok {
 			ReadTemplate(w, PageHome, Show_home, c)
 		}
@@ -129,7 +128,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//アカウント作成
-	if database.SaveUserAccount(user) {
+	if SaveUserAccount(user) {
 		ReadTemplate(w, PageLogin, Show_login, Succes_account_create_message)
 
 	} else {
@@ -197,7 +196,7 @@ func UpdateAccount(w http.ResponseWriter, r *http.Request) {
 			user.HashPassword = HashFiled(r.FormValue(F_password))
 		}
 
-		if ok, tmp := database.UpdateUserAccount(cookies[2], user); ok {
+		if ok, tmp := UpdateUserAccount(cookies[2], user); ok {
 			//クッキー作成
 			if ok, _ := CreateCookie(w, r, tmp); ok {
 				ReadTemplate(w, PageLogin, Show_home, nil)
@@ -222,7 +221,7 @@ func ImageUpload(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//データベース更新
-		if ok, user = database.UpdateUserAccount(cookies[2], user); ok {
+		if ok, user = UpdateUserAccount(cookies[2], user); ok {
 
 			//画像アップロード
 			err := UploadImg(file, fileHeader)
@@ -245,7 +244,7 @@ func ImageUpload(w http.ResponseWriter, r *http.Request) {
 func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
 		//アカウント、クッキー削除
-		if database.DeleteUserAccount(cookies[2]) && DiscardCookie(w, r) {
+		if DeleteUserAccount(cookies[2]) && DiscardCookie(w, r) {
 			ReadTemplate(w, PageLogin, Show_login, Succes_account_delete_message)
 
 		} else {
@@ -296,7 +295,7 @@ func CreateWorkBook(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//問題集保存
-		if database.CreateWorkbook(workbook) {
+		if CreateWorkbook(workbook) {
 			ReadTemplate(w, PageHome, Show_home, nil)
 		} else {
 			ErrorHandling(nil)
