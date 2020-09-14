@@ -1,7 +1,6 @@
-package pkg
+package api
 
 import (
-	"cloud.google.com/go/datastore"
 	"html/template"
 	"net/http"
 )
@@ -51,10 +50,6 @@ type CookiesTest struct {
 	UserID   *http.Cookie
 }
 
-type DataStoreClient struct {
-	DataStore *datastore.Client
-}
-
 const (
 	//HTML各パーツ
 	index                     = "web/template/index.html"
@@ -102,9 +97,11 @@ const (
 	F_book_id   = "bookId"
 
 	//GCPプロジェクトID
-	project_id = "apptestgo0000"
+	Project_id = "apptestgo0000"
 	//CloudStoreバケット名
 	BucketName = "gompei/"
+
+	PORT = ":8080"
 )
 
 var (
