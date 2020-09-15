@@ -124,3 +124,16 @@ var (
 		},
 	}
 )
+
+type Workbook struct {
+	DB Repository
+}
+
+func NewWorkbook(repo Repository) *Workbook {
+	return &Workbook{
+		DB: repo,
+	}
+}
+
+type Repository interface {
+}

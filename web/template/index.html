@@ -7,7 +7,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
-    <link href="/web/img/favicon.png" rel="icon">
+    <link href="/web/img/WorkBookLogo.png" rel="icon">
     <link href="/web/img/apple-touch-icon.png" rel="apple-touch-icon">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700"
           rel="stylesheet">
@@ -30,9 +30,6 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             <li><a href="/login/page" class="">ログイン</a></li>
-            <li>
-{{/*              <router-link to="/login/page">ログイン</router-link>*/}}
-            </li>
           </ul>
         </div>
       </div>
@@ -155,31 +152,7 @@
   <script src="/web/js/bootstrap.min.js"></script>
   <script src="/web/js/easing.min.js"></script>
   <script src="/web/js/index.js"></script>
-  <script src="/web/js/vue.min.js"></script>
-  <script src="/web/js/vue-router.js"></script>
-  <script type="text/javascript">
-    // ルートオプションを渡してルーターインスタンスを生成
-    var router = new VueRouter({
-      routes: [
-        {
-          path: '/login/page',
-          component: {
-            template: '<div>トップページです</div>'
-          }
-        },
-        {
-          path: '/users',
-          component: {
-            template: '<div>ユーザー一覧ページです。</div>'
-          }
-        }
-      ]
-    })
-
-    var app = new Vue({
-      router: router
-    }).$mount('#app')
-  </script>
+  <script type="text/javascript"></script>
   </body>
   </html>
 {{end}}
