@@ -14,9 +14,9 @@ func Route() *mux.Router {
 	//router.HandleFunc("api/todos/{id}", deleteTodos).Method("DELETE")
 
 	//静的ファイル読み込み
-	router.Handle("/web/js/", http.StripPrefix("/web/js/", http.FileServer(http.Dir("web/js/"))))
-	router.Handle("/web/css/", http.StripPrefix("/web/css/", http.FileServer(http.Dir("web/css/"))))
-	router.Handle("/web/img/", http.StripPrefix("/web/img/", http.FileServer(http.Dir("web/img/"))))
+	http.Handle("/web/js/", http.StripPrefix("/web/js/", http.FileServer(http.Dir("web/js/"))))
+	http.Handle("/web/css/", http.StripPrefix("/web/css/", http.FileServer(http.Dir("web/css/"))))
+	http.Handle("/web/img/", http.StripPrefix("/web/img/", http.FileServer(http.Dir("web/img/"))))
 
 	//ハンドラ登録
 	//アプリ紹介ページ
