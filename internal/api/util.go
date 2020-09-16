@@ -7,7 +7,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"google.golang.org/api/option"
 	"io"
 	"log"
 	"mime/multipart"
@@ -37,15 +36,15 @@ func GoogleGetConnect() *oauth2.Config {
 
 //cloud storage クライアント作成
 func NewClient(ctx context.Context) (*Client, error) {
-	//client, err := storage.NewClient(ctx)
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
+	client, err := storage.NewClient(ctx)
+	//client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
 		CloudStorage: client,
 	}, nil
-	return nil, nil
+	//return nil, nil
 }
 
 //画像アップロード（CloudStore）

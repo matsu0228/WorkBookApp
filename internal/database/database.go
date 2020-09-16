@@ -5,7 +5,6 @@ import (
 	"cloud.google.com/go/datastore"
 	"context"
 	"google.golang.org/api/iterator"
-	"google.golang.org/api/option"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -18,15 +17,15 @@ type Client struct {
 
 //NewClient　はDataStoreのクライアントを生成する関数
 func NewClient(ctx context.Context) (*Client, error) {
-	//client, err := datastore.NewClient(ctx, api.Project_id)
-	client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
+	client, err := datastore.NewClient(ctx, api.Project_id)
+	//client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
 		DataStore: client,
 	}, nil
-	return nil, nil
+	//return nil, nil
 }
 
 //CheckUserLogin はメールアドレスとパスワードを比較して、booleanとユーザアカウント情報を返す関数
