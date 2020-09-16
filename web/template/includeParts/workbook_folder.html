@@ -1,17 +1,19 @@
 {{define "content"}}
-    <div class="content-wrapper">
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">学習</h1>
-                    </div>
-                </div>
-            </div>
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">学習</h1>
+          </div>
         </div>
-        <div class="content">
-            <div class="container-fluid">
-                {{/* <div class="">
+      </div>
+    </div>
+
+
+    <div class="content">
+      <div class="container-fluid">
+        {{/* <div class="">
                     <div class="card-header">
                         <h3 class="card-title">問題集一覧</h3>
                     </div>
@@ -29,44 +31,97 @@
                         </form>
                     </div>
                 </div>*/}}
+        {{/*              <div class="col-md-3 col-sm-6 col-12">*/}}
+        {{/*                <div class="card">*/}}
+        {{/*                  <img src="/web/img/WorkBookLogo.png" class="card-img-top" alt="...">*/}}
+        {{/*                  <div class="card-body">*/}}
+        {{/*                    <h5 class="card-title">Card title</h5>*/}}
+        {{/*                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>*/}}
+        {{/*                    <a href="#" class="btn btn-primary">Go somewhere</a>*/}}
+        {{/*                  </div>*/}}
+        {{/*                </div>*/}}
+        {{/*                <div class="card">*/}}
+        {{/*                  <img src="/web/img/WorkBookLogo.png" class="card-img-top" alt="...">*/}}
+        {{/*                  <div class="card-body">*/}}
+        {{/*                    <h5 class="card-title">Card title</h5>*/}}
+        {{/*                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>*/}}
+        {{/*                    <a href="#" class="btn btn-primary">Go somewhere</a>*/}}
+        {{/*                  </div>*/}}
+        {{/*                </div>*/}}
+        {{/*              </div>*/}}
+
+        {{/*        {{range $index,$workbook :=.}}*/}}
+        {{/*        <div class="col-sm-6">*/}}
+        {{/*          <div class="hoge">*/}}
+        {{/*            <div class="card">*/}}
+        {{/*              <img src="/web/img/WorkBookLogo.png" class="card-img-top" alt="...">*/}}
+        {{/*              <div class="card-body">*/}}
+        {{/*                <h5 class="card-title">{{$workbook.Title}}</h5>*/}}
+        {{/*                <p class="card-text">ここは説明文が入る</p>*/}}
+        {{/*                <a href="#"></a>*/}}
+        {{/*                <input type="hidden" name="" value="{{$workbook.BookId}}">*/}}
+        {{/*              </div>*/}}
+        {{/*            </div>*/}}
+        {{/*            <a href="#"></a>*/}}
+        {{/*          </div>*/}}
+        {{/*        </div>*/}}
+        {{/*        {{end}}*/}}
+        <div class="row">
+          {{range $index,$workbook :=.}}
+            <div class="col-sm-3">
+              <div class="hoge">
                 <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">問題集一覧</h3>
-                        <div class="card-tools">
-                            <ul class="pagination pagination-sm float-right">
-                                <li class="page-item"><a class="page-link" href="#">«</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">»</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th style="width: 10px"></th>
-                                <th>タイトル</th>
-                                <th>作成者</th>
-                                <th style="width: 100px"></th>
-                            </tr>
-                            </thead>
-                            {{range $index,$workbook :=.}}
-                                <tbody>
-                                <tr>
-                                    <td>{{Increment $index}}</td>
-                                    <td>{{$workbook.Title}}</td>
-                                    <td>あああ</td>
-                                    <td><a href="/workbook/learning/page">開始</a></td>
-                                    <input type="hidden" name="" value="{{$workbook.BookId}}">
-                                </tr>
-                                </tbody>
-                            {{end}}
-                        </table>
-                    </div>
+                  <img src="/web/img/WorkBookLogo.png" class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <h5 class="card-title">{{$workbook.Title}}</h5>
+                    <p class="card-text">説明文(１５文字)</p>
+                    <a href="#"></a>
+                  </div>
                 </div>
+              </div>
             </div>
+          {{end}}
         </div>
+
+
+        {{/*        <div class="card">*/}}
+        {{/*          <div class="card-header">*/}}
+        {{/*            <h3 class="card-title">問題集一覧</h3>*/}}
+        {{/*            <div class="card-tools">*/}}
+        {{/*              <ul class="pagination pagination-sm float-right">*/}}
+        {{/*                <li class="page-item"><a class="page-link" href="#">«</a></li>*/}}
+        {{/*                <li class="page-item"><a class="page-link" href="#">1</a></li>*/}}
+        {{/*                <li class="page-item"><a class="page-link" href="#">2</a></li>*/}}
+        {{/*                <li class="page-item"><a class="page-link" href="#">3</a></li>*/}}
+        {{/*                <li class="page-item"><a class="page-link" href="#">»</a></li>*/}}
+        {{/*              </ul>*/}}
+        {{/*            </div>*/}}
+        {{/*          </div>*/}}
+        {{/*          <div class="card-body p-0">*/}}
+        {{/*            <table class="table">*/}}
+        {{/*              <thead>*/}}
+        {{/*              <tr>*/}}
+        {{/*                <th style="width: 10px"></th>*/}}
+        {{/*                <th>タイトル</th>*/}}
+        {{/*                <th>作成者</th>*/}}
+        {{/*                <th style="width: 100px"></th>*/}}
+        {{/*              </tr>*/}}
+        {{/*              </thead>*/}}
+        {{/*              {{range $index,$workbook :=.}}*/}}
+        {{/*                <tbody>*/}}
+        {{/*                <tr>*/}}
+        {{/*                  <td>{{Increment $index}}</td>*/}}
+        {{/*                  <td>{{$workbook.Title}}</td>*/}}
+        {{/*                  <td>あああ</td>*/}}
+        {{/*                  <td><a href="/workbook/learning/page">開始</a></td>*/}}
+        {{/*                  <input type="hidden" name="" value="{{$workbook.BookId}}">*/}}
+        {{/*                </tr>*/}}
+        {{/*                </tbody>*/}}
+        {{/*              {{end}}*/}}
+        {{/*            </table>*/}}
+        {{/*          </div>*/}}
+        {{/*        </div>*/}}
+      </div>
     </div>
+  </div>
 {{end}}

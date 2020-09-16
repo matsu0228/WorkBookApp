@@ -1,4 +1,4 @@
-package internal
+package api
 
 import (
 	"cloud.google.com/go/storage"
@@ -7,6 +7,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"google.golang.org/api/option"
 	"io"
 	"log"
 	"mime/multipart"
@@ -14,7 +15,9 @@ import (
 )
 
 //クライアント
-var Client *storage.Client
+type Client struct {
+	CloudStorage *storage.Client
+}
 
 //Oauth認証(Google)
 func GoogleGetConnect() *oauth2.Config {
@@ -33,24 +36,27 @@ func GoogleGetConnect() *oauth2.Config {
 //Oauth認証(Twitter)
 
 //cloud storage クライアント作成
-func CloudStoreNewClient(ctx context.Context) (*storage.Client, error) {
-	var err error
-	Client, err = storage.NewClient(ctx)
+func NewClient(ctx context.Context) (*Client, error) {
+	//client, err := storage.NewClient(ctx)
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}
-	return Client, nil
+	return &Client{
+		CloudStorage: client,
+	}, nil
+	return nil, nil
 }
 
 //画像アップロード（CloudStore）
-func UploadImg(file multipart.File, fileHeader *multipart.FileHeader) error {
+func (c *Client) UploadImg(file multipart.File, fileHeader *multipart.FileHeader) error {
 	ctx := context.Background()
 
 	// オブジェクトのReaderを作成
 	bucketName := "gompei"
 	objectName := fileHeader.Filename
 
-	writer := Client.Bucket(bucketName).Object(objectName).NewWriter(ctx)
+	writer := c.CloudStorage.Bucket(bucketName).Object(objectName).NewWriter(ctx)
 	defer func() {
 		if err := writer.Close(); err != nil {
 			log.Println("can't close", err)
@@ -80,12 +86,6 @@ func CompareHashAndFiled(hash []byte, filed string) bool {
 	}
 	return true
 }
-
-//バイト配列　→　文字列変換(多用禁止)
-//func Benchmark_Unsafe(data []byte) string {
-//	hashMail := *(*string)(unsafe.Pointer(&data))
-//	return hashMail
-//}
 
 //エラーハンドリング
 func ErrorHandling(err interface{}) {

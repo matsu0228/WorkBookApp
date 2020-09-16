@@ -1,4 +1,4 @@
-package internal
+package api
 
 import (
 	"context"
@@ -10,9 +10,16 @@ import (
 	"strconv"
 )
 
-/*ページ表示用ハンドラ*/
-//アプリ紹介ページ
-func IndexShowPage(w http.ResponseWriter, r *http.Request) {
+//NewAppは
+func NewApp(d Repository, s Storage) *App {
+	return &App{
+		DB: d,
+		ST: s,
+	}
+}
+
+//IndexShowPage　は
+func (a *App) IndexShowPage(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/" {
 		http.NotFound(w, r)
 		return
@@ -20,43 +27,43 @@ func IndexShowPage(w http.ResponseWriter, r *http.Request) {
 	ReadTemplate(w, PageIndex, "index", nil)
 }
 
-//ログインページ
-func ShowLoginPage(w http.ResponseWriter, r *http.Request) {
+//ShowLoginPage は
+func (a *App) ShowLoginPage(w http.ResponseWriter, r *http.Request) {
 	ReadTemplate(w, PageLogin, Show_login, nil)
 }
 
-//アカウント作成ページ
-func ShowAccountCreatePage(w http.ResponseWriter, r *http.Request) {
+//ShowAccountCreatePage　は
+func (a *App) ShowAccountCreatePage(w http.ResponseWriter, r *http.Request) {
 	conf := GoogleGetConnect()
 	GoogleUrl := conf.AuthCodeURL("yourStateUUID", oauth2.AccessTypeOffline)
 	ReadTemplate(w, PageAccountCreate, Show_account_create, GoogleUrl)
 }
 
 //HOMEページ
-func ShowHomePage(w http.ResponseWriter, r *http.Request) {
+func (a *App) ShowHomePage(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		ReadTemplate(w, PageHome, Show_home, nil)
 	}
 }
 
-//設定ページ
-func ShowEditPage(w http.ResponseWriter, r *http.Request) {
+//ShowEditPage　は
+func (a *App) ShowEditPage(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		ReadTemplate(w, PageAccountEdit, Show_home, nil)
 	}
 }
 
-//問題作成ページ
-func ShowWorkbookPage(w http.ResponseWriter, r *http.Request) {
+//ShowWorkbookPage　は
+func (a *App) ShowWorkbookPage(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		ReadTemplate(w, PageWorkbookCreate, Show_home, nil)
 	}
 }
 
 //学習フォルダページ
-func ShowWorkbookFolderPage(w http.ResponseWriter, r *http.Request) {
+func (a *App) ShowWorkbookFolderPage(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
-		if ok, workbooks := SelectWorkbooks(cookies[2].Value); ok {
+		if ok, workbooks := a.DB.SelectWorkbooks(cookies.UserID.Value); ok {
 			ReadTemplateToIncludeFunction(w, PageWorkbookFolder, Show_home, workbooks, FuncMap)
 		} else {
 			ErrorHandling("")
@@ -65,24 +72,24 @@ func ShowWorkbookFolderPage(w http.ResponseWriter, r *http.Request) {
 }
 
 //問題集共有ページ
-func ShowWorkbookSharePage(w http.ResponseWriter, r *http.Request) {
+func (a *App) ShowWorkbookSharePage(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		ReadTemplate(w, PageWorkbookShare, Show_home, nil)
 	}
 }
 
 //問題質問ページ
-func ShowWorkbookQuestion(w http.ResponseWriter, r *http.Request) {
+func (a *App) ShowWorkbookQuestion(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		ReadTemplate(w, PageWorkbookQuestion, Show_home, nil)
 	}
 }
 
 //各学習ページ
-func LearningWorkbook(w http.ResponseWriter, r *http.Request) {
+func (a *App) LearningWorkbook(w http.ResponseWriter, r *http.Request) {
 	if ok, _ := ConfirmationCookie(w, r); ok {
 		bookId := r.FormValue(F_book_id)
-		if ok, workbook := SelectWorkbook(bookId); ok {
+		if ok, workbook := a.DB.SelectWorkbook(bookId); ok {
 			ReadTemplateToIncludeFunction(w, PageWorkbookLearning, Show_home, workbook, FuncMap)
 		} else {
 			ErrorHandling("")
@@ -91,7 +98,7 @@ func LearningWorkbook(w http.ResponseWriter, r *http.Request) {
 }
 
 //ログアウト
-func Logout(w http.ResponseWriter, r *http.Request) {
+func (a *App) Logout(w http.ResponseWriter, r *http.Request) {
 	if DiscardCookie(w, r) {
 		ReadTemplate(w, PageLogin, Show_login, Succes_logout_message)
 	}
@@ -99,7 +106,7 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 
 /*アカウント関係ハンドラ*/
 //ログイン
-func ValidateLoginData(w http.ResponseWriter, r *http.Request) {
+func (a *App) ValidateLoginData(w http.ResponseWriter, r *http.Request) {
 	//from情報取得
 	user := UserAccount{
 		Mail: r.FormValue(F_email),
@@ -107,7 +114,7 @@ func ValidateLoginData(w http.ResponseWriter, r *http.Request) {
 	password := r.FormValue(F_password)
 
 	//データベースに問い合わせ
-	if ok, user := CheckUserLogin(user, password); ok {
+	if ok, user := a.DB.CheckUserLogin(user, password); ok {
 		if ok, c := CreateCookie(w, r, user); ok {
 			ReadTemplate(w, PageHome, Show_home, c)
 		}
@@ -118,7 +125,7 @@ func ValidateLoginData(w http.ResponseWriter, r *http.Request) {
 }
 
 //アカウント作成
-func CreateAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) CreateAccount(w http.ResponseWriter, r *http.Request) {
 	//fromからデータ取得
 	user := UserAccount{
 		UserName:     r.FormValue(F_user_name),
@@ -128,7 +135,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//アカウント作成
-	if SaveUserAccount(user) {
+	if a.DB.SaveUserAccount(user) {
 		ReadTemplate(w, PageLogin, Show_login, Succes_account_create_message)
 
 	} else {
@@ -137,7 +144,7 @@ func CreateAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 //Oauth認証（登録）(Google)
-func ExternalAuthenticationGoogle(w http.ResponseWriter, r *http.Request) {
+func (a *App) ExternalAuthenticationGoogle(w http.ResponseWriter, r *http.Request) {
 	conf := GoogleGetConnect()
 	code := r.URL.Query()["code"]
 	if code == nil || len(code) == 0 {
@@ -161,32 +168,32 @@ func ExternalAuthenticationGoogle(w http.ResponseWriter, r *http.Request) {
 }
 
 //Oauth認証（ログイン）(Google)
-func LoginGoogleAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) LoginGoogleAccount(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Oauth認証(登録)(FaceBook)
-func ExternalAuthenticationFaceBook(w http.ResponseWriter, r *http.Request) {
+func (a *App) ExternalAuthenticationFaceBook(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Oauth認証（ログイン）(Facebook)
-func LoginFacebookAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) LoginFacebookAccount(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Oauth認証（作成）(Twitter)
-func ExternalAuthenticationTwitter(w http.ResponseWriter, r *http.Request) {
+func (a *App) ExternalAuthenticationTwitter(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //Oauth認証(ログイン)(Twitter)
-func LoginTwitterAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) LoginTwitterAccount(w http.ResponseWriter, r *http.Request) {
 
 }
 
 //アカウント情報変更
-func UpdateAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) UpdateAccount(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
 		user := UserAccount{
 			UserName: r.FormValue(F_user_name),
@@ -196,7 +203,7 @@ func UpdateAccount(w http.ResponseWriter, r *http.Request) {
 			user.HashPassword = HashFiled(r.FormValue(F_password))
 		}
 
-		if ok, tmp := UpdateUserAccount(cookies[2], user); ok {
+		if ok, tmp := a.DB.UpdateUserAccount(cookies.Image, user); ok {
 			//クッキー作成
 			if ok, _ := CreateCookie(w, r, tmp); ok {
 				ReadTemplate(w, PageLogin, Show_home, nil)
@@ -209,7 +216,7 @@ func UpdateAccount(w http.ResponseWriter, r *http.Request) {
 }
 
 //画像変更
-func ImageUpload(w http.ResponseWriter, r *http.Request) {
+func (a *App) ImageUpload(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
 		//画像ファイル取得
 		file, fileHeader, err := r.FormFile(F_image)
@@ -221,10 +228,10 @@ func ImageUpload(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//データベース更新
-		if ok, user = UpdateUserAccount(cookies[2], user); ok {
+		if ok, user = a.DB.UpdateUserAccount(cookies.Image, user); ok {
 
 			//画像アップロード
-			err := UploadImg(file, fileHeader)
+			err := a.ST.UploadImg(file, fileHeader)
 			if err != nil {
 				//TODO:エラー処理は今後修正
 			}
@@ -241,10 +248,10 @@ func ImageUpload(w http.ResponseWriter, r *http.Request) {
 }
 
 //アカウント削除
-func DeleteAccount(w http.ResponseWriter, r *http.Request) {
+func (a *App) DeleteAccount(w http.ResponseWriter, r *http.Request) {
 	if ok, cookies := ConfirmationCookie(w, r); ok {
 		//アカウント、クッキー削除
-		if DeleteUserAccount(cookies[2]) && DiscardCookie(w, r) {
+		if a.DB.DeleteUserAccount(cookies.Image) && DiscardCookie(w, r) {
 			ReadTemplate(w, PageLogin, Show_login, Succes_account_delete_message)
 
 		} else {
@@ -255,7 +262,7 @@ func DeleteAccount(w http.ResponseWriter, r *http.Request) {
 
 /*問題集関係ハンドラ*/
 //問題集作成
-func CreateWorkBook(w http.ResponseWriter, r *http.Request) {
+func (a *App) CreateWorkBook(w http.ResponseWriter, r *http.Request) {
 	//クッキー確認
 	if ok, cookies := ConfirmationCookie(w, r); ok {
 		//from全情報取得
@@ -268,7 +275,7 @@ func CreateWorkBook(w http.ResponseWriter, r *http.Request) {
 		workbook.Contents = make([]Content, 0)
 		option := Option{}
 		//なぜかエラーハンドリングができない
-		workbook.UserId, _ = strconv.ParseInt(cookies[2].Value, 10, 64)
+		workbook.UserId, _ = strconv.ParseInt(cookies.UserID.Value, 10, 64)
 
 		//
 		for k, v := range r.Form {
@@ -295,7 +302,7 @@ func CreateWorkBook(w http.ResponseWriter, r *http.Request) {
 		}
 
 		//問題集保存
-		if CreateWorkbook(workbook) {
+		if a.DB.CreateWorkbook(workbook) {
 			ReadTemplate(w, PageHome, Show_home, nil)
 		} else {
 			ErrorHandling(nil)
@@ -303,9 +310,9 @@ func CreateWorkBook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-/*utilハンドラ*/
-//HTMLファイル読み込み(独自Func無し)
+//ReadTemplate　は
 func ReadTemplate(w http.ResponseWriter, files []string, showPage string, date interface{}) {
+	//
 	t, err := template.ParseFiles(files...)
 	if err != nil {
 		ErrorHandling(err)
@@ -314,33 +321,39 @@ func ReadTemplate(w http.ResponseWriter, files []string, showPage string, date i
 	t.ExecuteTemplate(w, showPage, date)
 }
 
-//HTMLファイル読み込み
+// ReadTemplateToIncludeFunction は
 func ReadTemplateToIncludeFunction(w http.ResponseWriter, files []string, showPage string, date interface{}, funcMap template.FuncMap) {
+	//
 	t, err := template.New(showPage).Funcs(funcMap).ParseFiles(files...)
 	if err != nil {
-		ErrorHandling(err)
 		return
 	}
 	t.ExecuteTemplate(w, showPage, date)
 }
 
-//クッキー確認util
-func ConfirmationCookie(w http.ResponseWriter, r *http.Request) (bool, []*http.Cookie) {
+//ConfirmationCookie は
+func ConfirmationCookie(w http.ResponseWriter, r *http.Request) (bool, Cookies) {
+	//
 	cookie1, err := r.Cookie(F_user_name)
 	if err != nil {
-		ErrorHandling(err)
-		ReadTemplate(w, PageLogin, "login", Error_cookie_cannot_confirm_message)
-		return false, nil
+		return false, Cookies{}
 	}
 	cookie2, _ := r.Cookie(F_image)
 	cookie3, _ := r.Cookie(F_user_id)
-	var c Cookies
-	c = append(c, cookie1, cookie2, cookie3)
+
+	//
+	c := Cookies{
+		UserName: cookie1,
+		Image:    cookie2,
+		UserID:   cookie3,
+	}
+
 	return true, c
 }
 
-//クッキー作成
+//CreateCookie は
 func CreateCookie(w http.ResponseWriter, r *http.Request, user UserAccount) (bool, Cookies) {
+	//
 	cookie1 := http.Cookie{
 		Name:  F_user_name,
 		Value: user.UserName,
@@ -353,16 +366,23 @@ func CreateCookie(w http.ResponseWriter, r *http.Request, user UserAccount) (boo
 		Name:  F_user_id,
 		Value: strconv.Itoa(int(user.UserId)),
 	}
+
+	//
 	http.SetCookie(w, &cookie1)
 	http.SetCookie(w, &cookie2)
 	http.SetCookie(w, &cookie3)
-	c := Cookies{}
-	c = append(c, &cookie1, &cookie2, &cookie3)
+	c := Cookies{
+		UserName: &cookie1,
+		Image:    &cookie2,
+		UserID:   &cookie3,
+	}
+
 	return true, c
 }
 
-//クッキー破棄
+//DiscardCookie は
 func DiscardCookie(w http.ResponseWriter, r *http.Request) bool {
+	//
 	cookie1, err := r.Cookie(F_user_name)
 	if err != nil {
 		ErrorHandling(err)
@@ -371,11 +391,16 @@ func DiscardCookie(w http.ResponseWriter, r *http.Request) bool {
 	}
 	cookie2, _ := r.Cookie(F_image)
 	cookie3, _ := r.Cookie(F_user_id)
+
+	//
 	cookie1.MaxAge = -1
 	cookie2.MaxAge = -1
 	cookie3.MaxAge = -1
+
+	//
 	http.SetCookie(w, cookie1)
 	http.SetCookie(w, cookie2)
 	http.SetCookie(w, cookie3)
+
 	return true
 }

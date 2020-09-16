@@ -5,6 +5,12 @@ Workbook
 # Description(概要)
 
 # DEMO(実際にツールがどのように動作するか)
+  コンテナ上で実行
+  docker-compose exec app go run main.go
+  コンテナのシェルを起動
+  docker-compose exec app /bin/bash
+  ローカル上
+  go run main.go
 
 # Usage(ツールを動かす為の説明)
     cloud.google.com/go/datastore

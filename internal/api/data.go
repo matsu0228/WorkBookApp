@@ -1,54 +1,8 @@
-package internal
+package api
 
 import (
 	"html/template"
-	"net/http"
 )
-
-//ユーザアカウント
-type UserAccount struct {
-	UserId       int64
-	UserName     string
-	Mail         string
-	HashPassword []byte
-	ProfileImg   string
-}
-
-//問題集（ユーザーID+タイトル+オプション+設問の配列）
-type WorkbookContent struct {
-	UserId   int64
-	BookId   int64
-	Title    string
-	Options  Option
-	Contents []Content
-}
-
-//オプション（問題集）
-type Option struct {
-	NumberOfQuestions string
-	Shuffle           bool
-}
-
-//設問（問題集）
-type Content struct {
-	ProblemNumber    string
-	ProblemStatement string
-	Choice1          string
-	Choice2          string
-	Choice3          string
-	Choice4          string
-	Answer           string
-	Explanation      string
-}
-
-type Cookies []*http.Cookie
-
-//クッキーで名前、ユーザー画像、IDを保持
-type CookiesTest struct {
-	UserName *http.Cookie
-	Image    *http.Cookie
-	UserID   *http.Cookie
-}
 
 const (
 	//HTML各パーツ
@@ -100,8 +54,6 @@ const (
 	Project_id = "apptestgo0000"
 	//CloudStoreバケット名
 	BucketName = "gompei/"
-
-	PORT = ":8080"
 )
 
 var (
@@ -124,16 +76,3 @@ var (
 		},
 	}
 )
-
-type Workbook struct {
-	DB Repository
-}
-
-func NewWorkbook(repo Repository) *Workbook {
-	return &Workbook{
-		DB: repo,
-	}
-}
-
-type Repository interface {
-}
