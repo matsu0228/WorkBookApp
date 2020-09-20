@@ -15,6 +15,8 @@ const (
 	nav                       = "web/template/includeParts/nav.html"
 	footer                    = "web/template/includeParts/footer.html"
 	login                     = "web/template/login.html"
+	forgot_password           = "web/template/forgot_password.html"
+	recover_password          = "web/template/recover_password.html"
 	account_create            = "web/template/account_create.html"
 	home                      = "web/template/home.html"
 	workbook_create_content   = "web/template/includeParts/workbook_create_content.html"
@@ -24,9 +26,11 @@ const (
 	workbook_question         = "web/template/includeParts/workbook_question.html"
 
 	//ShowData用{{define "ここの名前"}}
-	Show_login          = "login"
-	Show_account_create = "account_create"
-	Show_home           = "home"
+	Show_login            = "login"
+	Show_forgot_password  = "forgot_password"
+	Show_recover_password = "recover_password"
+	Show_account_create   = "account_create"
+	Show_home             = "home"
 
 	//表示メッセージ
 	Succes_account_create_message = "アカウント作成が完了しました。ログインして下さい。"
@@ -57,9 +61,14 @@ const (
 )
 
 var (
+	//
+	oauthStateString = "thisshouldberandom"
+
 	//ページ本体
 	PageIndex            = []string{index}
 	PageLogin            = []string{head, script, login}
+	PageForgotPassword   = []string{head, script, forgot_password}
+	PageRecoverPassword  = []string{head, script, recover_password}
 	PageAccountCreate    = []string{head, script, account_create}
 	PageHome             = []string{head, script, home, home_content, sidebar, nav, footer}
 	PageAccountEdit      = []string{head, script, home, account_edit_content, sidebar, nav, footer}

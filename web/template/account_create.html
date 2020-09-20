@@ -1,71 +1,77 @@
 {{define "account_create"}}
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-        {{template "head"}}
-    </head>
-    <body class="hold-transition register-page">
-    <div class="register-box">
-        <div class="register-logo">
-            <a href="#"><b>WorkBook</b></a>
-        </div>
-        <div class="card">
-            <div class="card-body register-card-body">
-                <p class="login-box-msg">アカウント作成</p>
-                <p style="color: red;">{{/*{{.}}*/}}</p>
-                <form id="quickForm" novalidate="novalidate" action="/account/create" method="post">
-                    <div class="input-group mb-3 form-group">
-                        <input type="text" class="form-control" placeholder="ユーザ名" name="userName">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3 form-group">
-                        <input type="email" class="form-control" placeholder="メールアドレス" name="email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3 form-group">
-                        <input type="password" class="form-control" id="password" placeholder="パスワード" name="password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3 form-group">
-                        <input type="password" class="form-control" id="confirmation_password" placeholder="確認用パスワード" name="confirmation_password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4" style="margin: auto">
-                            <button type="submit" class="btn btn-primary btn-block">登録</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="social-auth-links text-center">
-                    <p>- 又は -</p>
-                    <a href="#" class="btn btn-block btn-info">
-                        <i class="fab fa-twitter mr-2"></i>Twitterアカウントで登録
-                    </a>
-                    <a href="{{.}}" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i>Googleアカウントで登録
-                    </a>
-                </div>
-                <a href="/" class="text-center">アカウント作成済みはこちら</a>
-            </div>
-        </div>
+  <!DOCTYPE html>
+  <html lang="ja">
+  <head>
+    {{template "head"}}
+  </head>
+  <body class="hold-transition register-page">
+  <div class="register-box">
+    <div class="register-logo">
+      <a href="#"><b>WorkBook</b></a>
     </div>
-    {{template "script"}}
-    </body>
-    </html>
+    <div class="card">
+      <div class="card-body register-card-body">
+        <p class="login-box-msg">アカウント作成</p>
+        <p style="color: red;">{{/*{{.}}*/}}</p>
+        <form id="quickForm" novalidate="novalidate" action="/account/create" method="post">
+          <div class="input-group mb-3 form-group">
+            <input type="text" class="form-control" placeholder="ユーザ名" name="userName">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-user"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3 form-group">
+            <input type="email" class="form-control" placeholder="メールアドレス" name="email">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3 form-group">
+            <input type="password" class="form-control" id="password" placeholder="パスワード" name="password">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3 form-group">
+            <input type="password" class="form-control" id="confirmation_password" placeholder="確認用パスワード"
+                   name="confirmation_password">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4" style="margin: auto">
+              <button type="submit" class="btn btn-primary btn-block">登録</button>
+            </div>
+          </div>
+        </form>
+        <div class="social-auth-links text-center">
+          <p>- 又は -</p>
+          <a href="{{.google}}" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i>Googleアカウントで作成
+          </a>
+          <a href="{{.facebook}}" class="btn btn-block btn-primary">
+            <i class="fab fa-facebook mr-2"></i>
+            Facebookアカウントで作成
+          </a>
+          <a href="{{.github}}" class="btn btn-block btn-dark">
+            <i class="fab fa-github mr-2"></i>
+            Githubアカウントで作成
+          </a>
+        </div>
+        <a href="/login/page" class="text-center">ログイン画面へ</a>
+      </div>
+    </div>
+  </div>
+  {{template "script"}}
+  </body>
+  </html>
 {{end}}

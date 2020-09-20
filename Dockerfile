@@ -1,8 +1,11 @@
-# ベースとなるDockerイメージ指定
-FROM golang:latest
-# コンテナ内に作業ディレクトリを作成
-RUN mkdir /go/src/work
+FROM golang:1.14
+#FROM golang:1.14-alpine
 # コンテナログイン時のディレクトリ指定
-WORKDIR /go/src/work
-# ホストのファイルをコンテナの作業ディレクトリに移行
-ADD . /go/src/work
+WORKDIR /opt/sandbox-docker-compose-go
+# ホストのファイルをコンテナの作業ディレクトリにコピー
+COPY . .
+# ADD . .
+# ビルド
+RUN go build -o app main.go
+# 起動
+CMD ["/opt/sandbox-docker-compose-go/app"]

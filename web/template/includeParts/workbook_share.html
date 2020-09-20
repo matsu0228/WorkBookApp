@@ -1,50 +1,34 @@
 {{define "content"}}
-    <div class="content-wrapper">
-        <div class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1 class="m-0 text-dark">共有</h1>
-                    </div>
-                </div>
-            </div>
+  <div class="content-wrapper">
+    <div class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1 class="m-0 text-dark">共有</h1>
+          </div>
         </div>
-        <div class="content">
-            <div class="container-fluid">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">最新の問題集</h3>
-                        <div class="card-tools">
-                            <ul class="pagination pagination-sm float-right">
-                                <li class="page-item"><a class="page-link" href="#">«</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">»</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th style="width: 10px"></th>
-                                <th>タイトル</th>
-                                <th>作成者</th>
-                                <th style="width: 100px"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+    <div class="content">
+      <div class="container-fluid">
+        <div class="row">
+          {{range $index,$book :=.}}
+            <div class="col-sm-3">
+              <div class="hoge">
+                <div class="card">
+                  <img src="/web/img/WorkBookLogo.png" class="card-img-top" alt="...">
+                  <div class="card-body">
+                    <h5 class="card-title">{{$book.Title}}</h5>
+                    <p class="card-text">説明文(１５文字)</p>
+                    <a href="#"></a>
+                    <input type="hidden" name="" value="{{$book.BookId}}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{end}}
+        </div>
+      </div>
+    </div>
+  </div>
 {{end}}

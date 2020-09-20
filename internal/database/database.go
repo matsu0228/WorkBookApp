@@ -5,6 +5,7 @@ import (
 	"cloud.google.com/go/datastore"
 	"context"
 	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -17,15 +18,14 @@ type Client struct {
 
 //NewClient　はDataStoreのクライアントを生成する関数
 func NewClient(ctx context.Context) (*Client, error) {
-	client, err := datastore.NewClient(ctx, api.Project_id)
-	//client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
+	//client, err := datastore.NewClient(ctx, api.Project_id)
+	client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
 		DataStore: client,
 	}, nil
-	//return nil, nil
 }
 
 //CheckUserLogin はメールアドレスとパスワードを比較して、booleanとユーザアカウント情報を返す関数
@@ -84,9 +84,13 @@ func (c *Client) SaveUserAccount(user api.UserAccount) bool {
 func (c *Client) UpdateUserAccount(cookie *http.Cookie, updateAccount api.UserAccount) (bool, api.UserAccount) {
 	ctx := context.Background()
 
-	//テスト
-	num, _ := strconv.ParseInt(cookie.Value, 10, 64)
-	Key := datastore.IDKey("user_account", num, nil)
+	//クッキーにあるユーザIDを元に更新
+	userId, err := strconv.ParseInt(cookie.Value, 10, 64)
+	if err != nil {
+		return false, api.UserAccount{}
+	}
+
+	Key := datastore.IDKey("user_account", userId, nil)
 	tx, err := c.DataStore.NewTransaction(ctx)
 	if err != nil {
 		return false, api.UserAccount{}
@@ -173,9 +177,8 @@ func (c *Client) SelectWorkbooks(id string) (bool, []api.WorkbookContent) {
 	Context := context.Background()
 
 	IntId, _ := strconv.Atoi(id)
-	query := datastore.NewQuery("workbook").
-		Filter("UserId =", IntId)
-	var workbooks []api.WorkbookContent
+	query := datastore.NewQuery("workbook").Filter("UserId =", IntId)
+	var WorkbookContents []api.WorkbookContent
 	it := c.DataStore.Run(Context, query)
 	for {
 		var tmp api.WorkbookContent
@@ -186,9 +189,9 @@ func (c *Client) SelectWorkbooks(id string) (bool, []api.WorkbookContent) {
 		if err != nil {
 			return false, nil
 		}
-		workbooks = append(workbooks, tmp)
+		WorkbookContents = append(WorkbookContents, tmp)
 	}
-	return true, workbooks
+	return true, WorkbookContents
 }
 
 //SelectWorkbook は
@@ -205,4 +208,88 @@ func (c *Client) SelectWorkbook(id string) (bool, api.WorkbookContent) {
 		return false, workbook
 	}
 	return true, workbook
+}
+
+//InsertWorkbookShare は
+func (c *Client) InsertWorkbookShare(bookId string) bool {
+	ctx := context.Background()
+	ok, book := c.SelectWorkbook(bookId)
+	if !ok {
+		return false
+	}
+
+	//キー作成
+	parentKey := datastore.IDKey("user_account", book.UserId, nil)
+	childKey := datastore.IncompleteKey("share_workbook", parentKey)
+
+	//
+	_, err := c.DataStore.Put(ctx, childKey, &book)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+//SelectShareWorkbook　は
+func (c *Client) SelectShareWorkbook() {
+
+}
+
+/*SelectAccountMailは*/
+func (c *Client) SelectAccountMail(searchTarget string) (bool, int64) {
+	ctx := context.Background()
+
+	//
+	query := datastore.NewQuery("user_account").Filter("Mail =", searchTarget)
+
+	//
+	it := c.DataStore.Run(ctx, query)
+	var tmp api.UserAccount
+
+	//
+	_, err := it.Next(&tmp)
+	if err == nil {
+		return true, tmp.UserId
+	} else {
+		return false, 0
+	}
+}
+
+/*UpdateAccountPasswordは*/
+func (c *Client) UpdateAccountPassword(mail string, password string, userId string) (bool, error) {
+	ctx := context.Background()
+
+	//クッキーにあるユーザIDを元に更新
+	id, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		return false, err
+	}
+
+	//
+	Key := datastore.IDKey("user_account", id, nil)
+	tx, err := c.DataStore.NewTransaction(ctx)
+	if err != nil {
+		return false, err
+	}
+
+	//
+	var tmp api.UserAccount
+	if err := tx.Get(Key, &tmp); err != nil {
+		return false, err
+	}
+
+	//パスワードの詰め替え
+	hash, err := api.HashFiled(password)
+	if err != nil {
+		return false, err
+	}
+	tmp.HashPassword = hash
+	if _, err := tx.Put(Key, &tmp); err != nil {
+		return false, err
+	}
+	if _, err := tx.Commit(); err != nil {
+		return false, err
+	}
+
+	return true, nil
 }

@@ -193,5 +193,9 @@ function End() {
 
 //各問題フォルダーページに飛ばす（あとでモーダル表示処理を付ける）
 function End2(){
-    window.location.href = '/account_delete';
+    window.location.href = '/account/delete';
+}
+
+function share(){
+  window.location.href = '/workbook/share';
 }

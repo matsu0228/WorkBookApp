@@ -1,129 +1,130 @@
 {{define "content"}}
-    <div class="content-wrapper">
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>設定</h1>
-                    </div>
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>設定</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle account_edit_img" src="" alt="User profile picture">
                 </div>
+                <h3 class="profile-username text-center"></h3>
+              </div>
             </div>
-        </section>
-        <section class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile">
-                                <div class="text-center">
-                                    <img class="profile-user-img img-fluid img-circle account_edit_img" src="" alt="User profile picture">
-                                </div>
-                                <h3 class="profile-username text-center"></h3>
-                            </div>
+          </div>
+          <div class="col-md-9">
+            <div class="card">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">設定</a>
+                  </li>
+                  <li class="nav-item"><a class="nav-link" href="#settings"
+                                          data-toggle="tab">プロフィール変更</a></li>
+                </ul>
+              </div>
+              <div class="card-body">
+                <div class="tab-content">
+                  <div class="active tab-pane" id="activity">
+                    <form class="form-horizontal" action="/" method="get">
+                      <div class="form-group row">
+                        <label for="inputName" class="col-sm-2 col-form-label">アカウント削除</label>
+                        <div class="col-sm-10">
+                          <button type="button" class="btn btn-danger" data-toggle="modal"
+                                  data-target="#modal-danger">
+                            削除する
+                          </button>
                         </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="card">
-                            <div class="card-header p-2">
-                                <ul class="nav nav-pills">
-                                    <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">設定</a>
-                                    </li>
-                                    <li class="nav-item"><a class="nav-link" href="#settings"
-                                                            data-toggle="tab">プロフィール変更</a></li>
-                                </ul>
-                            </div>
-                            <div class="card-body">
-                                <div class="tab-content">
-                                    <div class="active tab-pane" id="activity">
-                                        <form class="form-horizontal" action="/" method="get">
-                                            <div class="form-group row">
-                                                <label for="inputName" class="col-sm-2 col-form-label">アカウント削除</label>
-                                                <div class="col-sm-10">
-                                                    <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                            data-target="#modal-danger">
-                                                        削除する
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <div class="tab-pane" id="settings">
-                                        <form class="form-horizontal" method="post" action="./account_update">
-                                            <div class="form-group row">
-                                                <label for="inputName2" class="col-sm-2 col-form-label">ユーザ名</label>
-                                                <div class="col-sm-10">
-                                                    <input type="text" class="form-control" id="inputName2" name="userName" value="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="inputEmail" class="col-sm-2 col-form-label">メールアドレス</label>
-                                                <div class="col-sm-10">
-                                                    <input type="email" class="form-control" id="inputEmail" name="mail" value="">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="inputSkills" class="col-sm-2 col-form-label">パスワード</label>
-                                                <div class="col-sm-10">
-                                                    <input type="password" class="form-control" id="inputSkills">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <label for="inputSkills" class="col-sm-2 col-form-label">確認用パスワード</label>
-                                                <div class="col-sm-10">
-                                                    <input type="password" class="form-control" id="inputSkills" name="password">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="offset-sm-2 col-sm-10">
-                                                    <button type="submit" class="btn btn-danger">変更</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <form method="post" enctype="multipart/form-data" action="/image_upload">
-                                            <div class="form-group row">
-                                                <label for="exampleInputFile" class="col-sm-2 col-form-label">プロフィール画像</label>
-                                                <div class="col-sm-10">
-                                                    <div class="input-group">
-                                                        <div class="custom-file">
-                                                            <input type="file" class="custom-file-input" id="exampleInputFile" name="image" accept="image/*">
-                                                            <label class="custom-file-label" for="exampleInputFile">画像を選択して下さい</label>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="form-group row">
-                                                <div class="offset-sm-2 col-sm-10">
-                                                    <button type="submit" class="btn btn-success">画像アップロード</button>
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                      </div>
+                    </form>
+                  </div>
+                  <div class="tab-pane" id="settings">
+                    <form class="form-horizontal" method="post" action="./account_update">
+                      <div class="form-group row">
+                        <label for="inputName2" class="col-sm-2 col-form-label">ユーザ名</label>
+                        <div class="col-sm-10">
+                          <input type="text" class="form-control" id="inputName2" name="userName" value="">
                         </div>
-                    </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputEmail" class="col-sm-2 col-form-label">メールアドレス</label>
+                        <div class="col-sm-10">
+                          <input type="email" class="form-control" id="inputEmail" name="mail" value="">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputSkills" class="col-sm-2 col-form-label">パスワード</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" id="inputSkills">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label for="inputSkills" class="col-sm-2 col-form-label">確認用パスワード</label>
+                        <div class="col-sm-10">
+                          <input type="password" class="form-control" id="inputSkills" name="password">
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                          <button type="submit" class="btn btn-danger">変更</button>
+                        </div>
+                      </div>
+                    </form>
+                    <form method="post" enctype="multipart/form-data" action="/image_upload">
+                      <div class="form-group row">
+                        <label for="exampleInputFile" class="col-sm-2 col-form-label">プロフィール画像</label>
+                        <div class="col-sm-10">
+                          <div class="input-group">
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" id="exampleInputFile" name="image"
+                                     accept="image/*">
+                              <label class="custom-file-label" for="exampleInputFile">画像を選択して下さい</label>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <div class="offset-sm-2 col-sm-10">
+                          <button type="submit" class="btn btn-success">画像アップロード</button>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
                 </div>
-                <div class="modal fade" id="modal-danger">
-                    <div class="modal-dialog">
-                        <div class="modal-content bg-danger">
-                            <div class="modal-header">
-                                <h4 class="modal-title">アカウント削除</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <p>本当に削除してもよろしいでしょうか？</p>
-                            </div>
-                            <div class="modal-footer justify-content-between">
-                                <button type="button" class="btn btn-outline-light" data-dismiss="modal">キャンセル</button>
-                                <button type="button" class="btn btn-outline-light" onclick="DeleteAccount()">削除
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              </div>
             </div>
-        </section>
-    </div>
+          </div>
+        </div>
+        <div class="modal fade" id="modal-danger">
+          <div class="modal-dialog">
+            <div class="modal-content bg-danger">
+              <div class="modal-header">
+                <h4 class="modal-title">アカウント削除</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>本当に削除してもよろしいでしょうか？</p>
+              </div>
+              <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">キャンセル</button>
+                <button type="button" class="btn btn-outline-light" onclick="DeleteAccount()">削除
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
 {{end}}

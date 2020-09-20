@@ -14,6 +14,9 @@ type Repository interface {
 	CreateWorkbook(book WorkbookContent) bool
 	SelectWorkbooks(id string) (bool, []WorkbookContent)
 	SelectWorkbook(id string) (bool, WorkbookContent)
+	InsertWorkbookShare(bookId string) bool
+	SelectAccountMail(searchTarget string) (bool, int64)
+	UpdateAccountPassword(mail string, password string, userId string) bool
 }
 
 type Storage interface {
@@ -22,8 +25,6 @@ type Storage interface {
 
 //どうしても実装できなった（interfaceなしだと）
 type App struct {
-	//DB *datastore.Client
-	//ST *storage.Client
 	DB Repository
 	ST Storage
 }

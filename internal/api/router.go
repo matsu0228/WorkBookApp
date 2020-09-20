@@ -16,77 +16,40 @@ func Route(app *App) *mux.Router {
 
 	//ハンドラ登録
 	//アプリ紹介ページ
-	r.HandleFunc("/", app.IndexShowPage)
+	r.HandleFunc("/", app.IndexShowPage).Methods("GET")
 	//ユーザ認証関
-	r.HandleFunc("/login/page", app.ShowLoginPage)
-	r.HandleFunc("/login", app.ValidateLoginData)
-	r.HandleFunc("/login/google", app.ShowLoginPage)
-	r.HandleFunc("/login/facebook", app.ValidateLoginData)
-	r.HandleFunc("/login/twitter", app.Logout)
-	r.HandleFunc("/logout", app.Logout)
+	r.HandleFunc("/login/page", app.ShowLoginPage).Methods("GET")
+	r.HandleFunc("/login/forgot-password", app.ShowForgotPasswordPage).Methods("GET")
+	r.HandleFunc("/login/PasswordReissue", app.SendReissueEmail).Methods("POST")
+	r.HandleFunc("/login/recover-password/page", app.ShowRecoverPasswordPage).Methods("GET")
+	r.HandleFunc("/login/recover-password", app.RecoverPassword).Methods("POST")
+
+	r.HandleFunc("/login", app.ValidateLoginData).Methods("POST")
+	r.HandleFunc("/login/google", app.ShowLoginPage).Methods("GET")
+	r.HandleFunc("/login/facebook", app.ValidateLoginData).Methods("GET")
+	r.HandleFunc("/login/github", app.Logout).Methods("GET")
+	r.HandleFunc("/logout", app.Logout).Methods("GET")
+
 	//アカウント関係
-	r.HandleFunc("/account/create/page", app.ShowAccountCreatePage)
-	r.HandleFunc("/account/home/page", app.ShowHomePage)
-	r.HandleFunc("/account/edit/page", app.ShowEditPage)
-	r.HandleFunc("/account/create", app.CreateAccount)
-	r.HandleFunc("/account/create/google", app.ExternalAuthenticationGoogle)
-	r.HandleFunc("/account/create/facebook", app.ValidateLoginData)
-	r.HandleFunc("/account/create/twitter", app.Logout)
-	r.HandleFunc("/account/update", app.UpdateAccount)
-	r.HandleFunc("/account/delete", app.DeleteAccount)
-	r.HandleFunc("/account/imageUpload", app.ImageUpload)
+	r.HandleFunc("/account/create/page", app.ShowAccountCreatePage).Methods("GET")
+	r.HandleFunc("/account/home/page", app.ShowHomePage).Methods("GET")
+	r.HandleFunc("/account/edit/page", app.ShowEditPage).Methods("GET")
+	r.HandleFunc("/account/create", app.CreateAccount).Methods("POST")
+	r.HandleFunc("/account/create/google", app.ExternalAuthenticationGoogle).Methods("GET")
+	r.HandleFunc("/account/create/facebook", app.ExternalAuthenticationFaceBook).Methods("GET")
+	r.HandleFunc("/account/create/github", app.ExternalAuthenticationGithub).Methods("GET")
+	r.HandleFunc("/account/update", app.UpdateAccount).Methods("POST")
+	r.HandleFunc("/account/delete", app.DeleteAccount).Methods("POST")
+	r.HandleFunc("/account/imageUpload", app.ImageUpload).Methods("POST")
+
 	//問題集関係
-	r.HandleFunc("/workbook/create/page", app.ShowWorkbookPage)
-	r.HandleFunc("/workbook/folder/page", app.ShowWorkbookFolderPage)
-	r.HandleFunc("/workbook/share", app.ShowWorkbookSharePage)
-	r.HandleFunc("/workbook/question", app.ShowWorkbookQuestion)
-	r.HandleFunc("/workbook/learning/page", app.LearningWorkbook)
-	r.HandleFunc("/workbook/create", app.CreateWorkBook)
+	r.HandleFunc("/workbook/create/page", app.ShowWorkbookPage).Methods("GET")
+	r.HandleFunc("/workbook/folder/page", app.ShowWorkbookFolderPage).Methods("GET")
+	r.HandleFunc("/workbook/share/page", app.ShowWorkbookSharePage).Methods("GET")
+	r.HandleFunc("/workbook/learning/page", app.LearningWorkbook).Methods("POST")
+	r.HandleFunc("/workbook/share", app.WorkbookUpload).Methods("POST")
+	r.HandleFunc("/workbook/create", app.CreateWorkBook).Methods("POST")
 
 	// CORS対応（省略）
 	return r
-
-	//r := mux.NewRouter()
-	//
-	//// 単純なハンドラ
-	//r.HandleFunc("/", YourHandler)
-	//
-	//// パスに変数を埋め込み
-	//r.HandleFunc("/hello/{name}", VarsHandler)
-	//
-	//// パス変数で正規表現を使用
-	//r.HandleFunc("/hello/{name}/{age:[0-9]+}", RegexHandler)
-	//
-	//// クエリ文字列の取得
-	//r.HandleFunc("/hi/", QueryStringHandler)
-	//
-	//// 静的ファイルの提供
-	//// $PROROOT/assets/about.html が http://localhost:8080/assets/about.html でアクセスできる
-	//r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", http.FileServer(http.Dir("./assets"))))
-	//
-	//// リダイレクト
-	//r.HandleFunc("/moved", RedirectHandler)
-	//
-	//// マッチするパスがない場合のハンドラ
-	//r.NotFoundHandler = http.HandlerFunc(NotFoundHandler)
-	//
-	//// 複数のハンドラで共通の処理を実行する
-	//// 今回はcontextのセットとゲットを試しているが、同じパターンでDBの初期化や認証処理やログ書き出しなどにも応用できる
-	//// ハンドラを引き渡すには http.Handler 型を使い func(http.ResponseWriter, *http.Request) から http.Handler への変換には http.HandlerFunc を利用する
-	//// http.Handler をハンドラとして登録する場合は Router.Handle を利用する
-	//r.Handle("/some1", UseContext(http.HandlerFunc(SomeHandler1)))
-	//r.Handle("/some2", UseContext(http.HandlerFunc(SomeHandler2)))
-	//
-	//// http://localhost:8080 でサービスを行う
-	//http.ListenAndServe(":8080", r)
-
-	//router.HandleFunc("/api/todos", app.getTodos).Methods("GET")
-	//router.HandleFunc("api/todos", addTodos).Method("POST")
-	//router.HandleFunc("api/todos/{id}", updateTodos).Method("POST")
-	//router.HandleFunc("api/todos/{id}", deleteTodos).Method("DELETE")
-
-	//静的ファイル読み込み
-	//http.Handle("/web/js/", http.StripPrefix("/web/js/", http.FileServer(http.Dir("web/js/"))))
-	//http.Handle("/web/css/", http.StripPrefix("/web/css/", http.FileServer(http.Dir("web/css/"))))
-	//http.Handle("/web/img/", http.StripPrefix("/web/img/", http.FileServer(http.Dir("web/img/"))))
 }

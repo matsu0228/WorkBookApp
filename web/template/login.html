@@ -1,61 +1,62 @@
 {{define "login"}}
-    <!DOCTYPE html>
-    <!-- ライセンス　-->
-    <!--Copyright (c) 2014-2020 AdminLTE.io　All rights reserved.
-        Workbook/web/LICENSE.txt-->
-    <html lang="ja">
-    {{template "head"}}
-    <body class="hold-transition login-page">
-    <div class="login-box">
-        <div class="login-logo">
-            <a href="/"><b>WorkBook</b></a>
-        </div>
-        <div class="card">
-            <div class="card-body login-card-body">
-                <form id="quickForm" novalidate="novalidate" action="/login" method="post">
-                    <p style="color:#ff0000;">{{.}}</p>
-                    <div class="input-group mb-3 form-group">
-                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="メールアドレス">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="input-group mb-3 form-group">
-                        <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="パスワード">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-4" style="margin: auto">
-                            <button type="submit" class="btn btn-primary btn-block">ログイン</button>
-                        </div>
-                    </div>
-                </form>
-                <div class="social-auth-links text-center mb-3">
-                    <p>- 又は -</p>
-                    <a href="#" class="btn btn-block btn-info">
-                        <i class="fab fa-twitter mr-2"></i>
-                        Twitterアカウントでログイン
-                    </a>
-                    <a href="/account/create/google" class="btn btn-block btn-danger">
-                        <i class="fab fa-google-plus mr-2"></i>Googleアカウントでログイン
-                    </a>
-                </div>
-                <p class="mb-1">
-                    <a href="#">パスワード再発行</a>
-                </p>
-                <p class="mb-0">
-                    <a href="/account/create/page" class="text-center">アカウント作成</a>
-                </p>
-            </div>
-        </div>
+  <!DOCTYPE html>
+  <html lang="ja">
+  {{template "head"}}
+  <body class="hold-transition login-page">
+  <div class="login-box">
+    <div class="login-logo">
+      <a href="/"><b>WorkBook</b></a>
     </div>
-    {{template "script"}}
-    </body>
-    </html>
+    <div class="card">
+      <div class="card-body login-card-body">
+        <form id="quickForm" novalidate="novalidate" action="/login" method="post">
+          <p style="color:#ff0000;">{{.}}</p>
+          <div class="input-group mb-3 form-group">
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" placeholder="メールアドレス">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
+            </div>
+          </div>
+          <div class="input-group mb-3 form-group">
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="パスワード">
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-4" style="margin: auto">
+              <button type="submit" class="btn btn-primary btn-block">ログイン</button>
+            </div>
+          </div>
+        </form>
+        <div class="social-auth-links text-center mb-3">
+          <p>- 又は -</p>
+          <a href="#" class="btn btn-block btn-danger">
+            <i class="fab fa-google-plus mr-2"></i>Googleアカウントでログイン
+          </a>
+          <a href="#" class="btn btn-block btn-primary">
+            <i class="fab fa-facebook mr-2"></i>
+            Facebookアカウントでログイン
+          </a>
+          <a href="#" class="btn btn-block btn-dark">
+            <i class="fab fa-github mr-2"></i>
+            Githubアカウントでログイン
+          </a>
+        </div>
+        <p class="mb-1">
+          <a href="/login/forgot-password">パスワード再発行</a>
+        </p>
+        <p class="mb-0">
+          <a href="/account/create/page" class="text-center">アカウント作成</a>
+        </p>
+      </div>
+    </div>
+  </div>
+  {{template "script"}}
+  </body>
+  </html>
 {{end}}
