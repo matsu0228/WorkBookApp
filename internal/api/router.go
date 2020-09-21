@@ -19,15 +19,14 @@ func Route(app *App) *mux.Router {
 	r.HandleFunc("/", app.IndexShowPage).Methods("GET")
 	//ユーザ認証関
 	r.HandleFunc("/login/page", app.ShowLoginPage).Methods("GET")
-	r.HandleFunc("/login/forgot-password", app.ShowForgotPasswordPage).Methods("GET")
+	r.HandleFunc("/login/forgot-password/page", app.ShowForgotPasswordPage).Methods("GET")
 	r.HandleFunc("/login/PasswordReissue", app.SendReissueEmail).Methods("POST")
 	r.HandleFunc("/login/recover-password/page", app.ShowRecoverPasswordPage).Methods("GET")
 	r.HandleFunc("/login/recover-password", app.RecoverPassword).Methods("POST")
-
 	r.HandleFunc("/login", app.ValidateLoginData).Methods("POST")
-	r.HandleFunc("/login/google", app.ShowLoginPage).Methods("GET")
-	r.HandleFunc("/login/facebook", app.ValidateLoginData).Methods("GET")
-	r.HandleFunc("/login/github", app.Logout).Methods("GET")
+	r.HandleFunc("/login/google", app.ExternalAuthenticationGoogle).Methods("GET")
+	r.HandleFunc("/login/facebook", app.ExternalAuthenticationFaceBook).Methods("GET")
+	r.HandleFunc("/login/github", app.ExternalAuthenticationGithub).Methods("GET")
 	r.HandleFunc("/logout", app.Logout).Methods("GET")
 
 	//アカウント関係
@@ -35,9 +34,6 @@ func Route(app *App) *mux.Router {
 	r.HandleFunc("/account/home/page", app.ShowHomePage).Methods("GET")
 	r.HandleFunc("/account/edit/page", app.ShowEditPage).Methods("GET")
 	r.HandleFunc("/account/create", app.CreateAccount).Methods("POST")
-	r.HandleFunc("/account/create/google", app.ExternalAuthenticationGoogle).Methods("GET")
-	r.HandleFunc("/account/create/facebook", app.ExternalAuthenticationFaceBook).Methods("GET")
-	r.HandleFunc("/account/create/github", app.ExternalAuthenticationGithub).Methods("GET")
 	r.HandleFunc("/account/update", app.UpdateAccount).Methods("POST")
 	r.HandleFunc("/account/delete", app.DeleteAccount).Methods("POST")
 	r.HandleFunc("/account/imageUpload", app.ImageUpload).Methods("POST")
@@ -46,7 +42,7 @@ func Route(app *App) *mux.Router {
 	r.HandleFunc("/workbook/create/page", app.ShowWorkbookPage).Methods("GET")
 	r.HandleFunc("/workbook/folder/page", app.ShowWorkbookFolderPage).Methods("GET")
 	r.HandleFunc("/workbook/share/page", app.ShowWorkbookSharePage).Methods("GET")
-	r.HandleFunc("/workbook/learning/page", app.LearningWorkbook).Methods("POST")
+	r.HandleFunc("/workbook/learning/page", app.ShowLearningWorkbook).Methods("POST")
 	r.HandleFunc("/workbook/share", app.WorkbookUpload).Methods("POST")
 	r.HandleFunc("/workbook/create", app.CreateWorkBook).Methods("POST")
 

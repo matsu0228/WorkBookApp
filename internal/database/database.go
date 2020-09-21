@@ -29,7 +29,7 @@ func NewClient(ctx context.Context) (*Client, error) {
 }
 
 //CheckUserLogin はメールアドレスとパスワードを比較して、booleanとユーザアカウント情報を返す関数
-func (c *Client) CheckUserLogin(user api.UserAccount, password string) (bool, api.UserAccount) {
+func (c *Client) CheckUserLogin(user api.UserAccount, password string) (error, api.UserAccount) {
 	//
 	ctx := context.Background()
 
@@ -42,18 +42,21 @@ func (c *Client) CheckUserLogin(user api.UserAccount, password string) (bool, ap
 
 	//
 	_, err := it.Next(&tmp)
-	if err == nil {
-		if api.CompareHashAndFiled(tmp.HashPassword, password) {
-			return true, tmp
-		}
-		return false, user
-	} else {
-		return false, user
+	if err != nil {
+		return err, tmp
 	}
+
+	//
+	err = api.CompareHashAndFiled(tmp.HashPassword, password)
+	if err != nil {
+		return err, tmp
+	}
+
+	return nil, tmp
 }
 
-//SaveUserAccount はユーザIDを主キーにして、データを登録する関数
-func (c *Client) SaveUserAccount(user api.UserAccount) bool {
+//InsertUserAccount はユーザIDを主キーにして、データを登録する関数
+func (c *Client) InsertUserAccount(user api.UserAccount) error {
 	//
 	ctx := context.Background()
 
@@ -65,40 +68,135 @@ func (c *Client) SaveUserAccount(user api.UserAccount) bool {
 	//有効なキーの取得
 	keys, err := c.DataStore.AllocateIDs(ctx, keys)
 	if err != nil {
-		//datastoreキー作成エラー
-		return false
-	} else {
-		//
-		user.UserId = keys[0].ID
-		key.ID = keys[0].ID
-		_, err = c.DataStore.Put(ctx, key, &user)
-		if err != nil {
-			//datastore格納エラー
-			return false
-		}
-		return true
+		return err
 	}
+
+	//
+	user.Id = keys[0].ID
+	key.ID = keys[0].ID
+	_, err = c.DataStore.Put(ctx, key, &user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/**/
+func (c *Client) InsertOauthAccount(user api.UserAccount, kind string) error {
+	//
+	ctx := context.Background()
+
+	//
+	key := datastore.IDKey(kind, user.Id, nil)
+
+	//
+	_, err := c.DataStore.Put(ctx, key, &user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/**/
+func (c *Client) SelectOauthAccount(user api.UserAccount, kind string) error {
+	ctx := context.Background()
+
+	//
+	query := datastore.NewQuery(kind).Filter("Id =", user.Id)
+
+	//
+	it := c.DataStore.Run(ctx, query)
+	var tmp api.UserAccount
+
+	//
+	_, err := it.Next(&tmp)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+/*SelectAccountMailは*/
+func (c *Client) SelectUserAccountMail(searchTarget string) (error, int64) {
+	ctx := context.Background()
+
+	//
+	query := datastore.NewQuery("user_account").Filter("Mail =", searchTarget)
+
+	//
+	it := c.DataStore.Run(ctx, query)
+	var tmp api.UserAccount
+
+	//
+	_, err := it.Next(&tmp)
+	if err != nil {
+		return err, 0
+	}
+
+	return nil, tmp.Id
+}
+
+/*UpdateAccountPasswordは*/
+func (c *Client) UpdateUserAccountPassword(mail string, password string, userId string) error {
+	ctx := context.Background()
+
+	//クッキーにあるユーザIDを元に更新
+	id, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		return err
+	}
+
+	//
+	Key := datastore.IDKey("user_account", id, nil)
+	tx, err := c.DataStore.NewTransaction(ctx)
+	if err != nil {
+		return err
+	}
+
+	//
+	var tmp api.UserAccount
+	if err := tx.Get(Key, &tmp); err != nil {
+		return err
+	}
+
+	//パスワードの詰め替え
+	hash, err := api.HashFiled(password)
+	if err != nil {
+		return err
+	}
+	tmp.HashPassword = hash
+	if _, err := tx.Put(Key, &tmp); err != nil {
+		return err
+	}
+	if _, err := tx.Commit(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 //UpdateUserAccount　は登録されているユーザ情報を更新する関数
-func (c *Client) UpdateUserAccount(cookie *http.Cookie, updateAccount api.UserAccount) (bool, api.UserAccount) {
+func (c *Client) UpdateUserAccount(cookie *http.Cookie, updateAccount api.UserAccount) (error, api.UserAccount) {
 	ctx := context.Background()
 
 	//クッキーにあるユーザIDを元に更新
 	userId, err := strconv.ParseInt(cookie.Value, 10, 64)
 	if err != nil {
-		return false, api.UserAccount{}
+		return err, api.UserAccount{}
 	}
 
 	Key := datastore.IDKey("user_account", userId, nil)
 	tx, err := c.DataStore.NewTransaction(ctx)
 	if err != nil {
-		return false, api.UserAccount{}
+		return err, api.UserAccount{}
 	}
 
 	var tmp api.UserAccount
 	if err := tx.Get(Key, &tmp); err != nil {
-		return false, tmp
+		return err, tmp
 	}
 
 	rv := reflect.ValueOf(updateAccount)
@@ -107,8 +205,8 @@ func (c *Client) UpdateUserAccount(cookie *http.Cookie, updateAccount api.UserAc
 		filed := rt.Field(i)
 		if rv.FieldByName(filed.Name).Interface() != "" {
 			switch filed.Name {
-			case "UserName":
-				tmp.UserName = rv.FieldByName(filed.Name).Interface().(string)
+			case "Name":
+				tmp.Name = rv.FieldByName(filed.Name).Interface().(string)
 			case "Mail":
 				tmp.Mail = rv.FieldByName(filed.Name).Interface().(string)
 			case "HashPassword":
@@ -121,17 +219,17 @@ func (c *Client) UpdateUserAccount(cookie *http.Cookie, updateAccount api.UserAc
 		}
 	}
 	if _, err := tx.Put(Key, &tmp); err != nil {
-		return false, updateAccount
+		return err, updateAccount
 	}
 	if _, err := tx.Commit(); err != nil {
-		return false, updateAccount
+		return err, updateAccount
 	}
 
-	return true, tmp
+	return nil, tmp
 }
 
 //DeleteUserAccount　は登録しているユーザ情報を削除する関数
-func (c *Client) DeleteUserAccount(cookie *http.Cookie) bool {
+func (c *Client) DeleteUserAccount(cookie *http.Cookie) error {
 	//
 	ctx := context.Background()
 
@@ -139,13 +237,13 @@ func (c *Client) DeleteUserAccount(cookie *http.Cookie) bool {
 	key := datastore.NameKey("user_account", cookie.Value, nil)
 	err := c.DataStore.Delete(ctx, key)
 	if err != nil {
-		return false
+		return err
 	}
-	return true
+	return nil
 }
 
 //CreateWorkbook　は４択問題集をbookIDを主キーにデータを登録する関数
-func (c *Client) CreateWorkbook(book api.WorkbookContent) bool {
+func (c *Client) InsertWorkbook(book api.WorkbookContent) error {
 	//クライアント作成
 	ctx := context.Background()
 
@@ -158,22 +256,23 @@ func (c *Client) CreateWorkbook(book api.WorkbookContent) bool {
 	//有効なキーの取得
 	keys, err := c.DataStore.AllocateIDs(ctx, keys)
 	if err != nil {
-		return false
-	} else {
-		book.BookId = keys[0].ID
-		childKey.ID = keys[0].ID
-
-		//book格納
-		_, err := c.DataStore.Put(ctx, childKey, &book)
-		if err != nil {
-			return false
-		}
-		return true
+		return err
 	}
+
+	book.BookId = keys[0].ID
+	childKey.ID = keys[0].ID
+
+	//book格納
+	_, err = c.DataStore.Put(ctx, childKey, &book)
+	if err != nil {
+		return err
+	}
+	return nil
+
 }
 
 //SelectWorkbooks は問題集のタイトル,IDを取得して,boolean,構造体の配列を返す関数
-func (c *Client) SelectWorkbooks(id string) (bool, []api.WorkbookContent) {
+func (c *Client) SelectWorkbooks(id string) (error, []api.WorkbookContent) {
 	Context := context.Background()
 
 	IntId, _ := strconv.Atoi(id)
@@ -187,35 +286,34 @@ func (c *Client) SelectWorkbooks(id string) (bool, []api.WorkbookContent) {
 			break
 		}
 		if err != nil {
-			return false, nil
+			return err, nil
 		}
 		WorkbookContents = append(WorkbookContents, tmp)
 	}
-	return true, WorkbookContents
+	return nil, WorkbookContents
 }
 
 //SelectWorkbook は
-func (c *Client) SelectWorkbook(id string) (bool, api.WorkbookContent) {
+func (c *Client) SelectWorkbook(id string) (error, api.WorkbookContent) {
 	Context := context.Background()
 	var workbook api.WorkbookContent
 
 	bookId, _ := strconv.Atoi(id)
-	query := datastore.NewQuery("workbook").
-		Filter("BookId =", bookId)
+	query := datastore.NewQuery("workbook").Filter("BookId =", bookId)
 	it := c.DataStore.Run(Context, query)
 	_, err := it.Next(&workbook)
 	if err != nil {
-		return false, workbook
+		return err, workbook
 	}
-	return true, workbook
+	return nil, workbook
 }
 
-//InsertWorkbookShare は
-func (c *Client) InsertWorkbookShare(bookId string) bool {
+//InsertShareWorkbook は
+func (c *Client) InsertShareWorkbook(bookId string) error {
 	ctx := context.Background()
-	ok, book := c.SelectWorkbook(bookId)
-	if !ok {
-		return false
+	err, book := c.SelectWorkbook(bookId)
+	if err != nil {
+		return err
 	}
 
 	//キー作成
@@ -223,73 +321,14 @@ func (c *Client) InsertWorkbookShare(bookId string) bool {
 	childKey := datastore.IncompleteKey("share_workbook", parentKey)
 
 	//
-	_, err := c.DataStore.Put(ctx, childKey, &book)
+	_, err = c.DataStore.Put(ctx, childKey, &book)
 	if err != nil {
-		return false
+		return err
 	}
-	return true
+	return nil
 }
 
 //SelectShareWorkbook　は
-func (c *Client) SelectShareWorkbook() {
+func (c *Client) SelectShareWorkbooks() {
 
-}
-
-/*SelectAccountMailは*/
-func (c *Client) SelectAccountMail(searchTarget string) (bool, int64) {
-	ctx := context.Background()
-
-	//
-	query := datastore.NewQuery("user_account").Filter("Mail =", searchTarget)
-
-	//
-	it := c.DataStore.Run(ctx, query)
-	var tmp api.UserAccount
-
-	//
-	_, err := it.Next(&tmp)
-	if err == nil {
-		return true, tmp.UserId
-	} else {
-		return false, 0
-	}
-}
-
-/*UpdateAccountPasswordは*/
-func (c *Client) UpdateAccountPassword(mail string, password string, userId string) (bool, error) {
-	ctx := context.Background()
-
-	//クッキーにあるユーザIDを元に更新
-	id, err := strconv.ParseInt(userId, 10, 64)
-	if err != nil {
-		return false, err
-	}
-
-	//
-	Key := datastore.IDKey("user_account", id, nil)
-	tx, err := c.DataStore.NewTransaction(ctx)
-	if err != nil {
-		return false, err
-	}
-
-	//
-	var tmp api.UserAccount
-	if err := tx.Get(Key, &tmp); err != nil {
-		return false, err
-	}
-
-	//パスワードの詰め替え
-	hash, err := api.HashFiled(password)
-	if err != nil {
-		return false, err
-	}
-	tmp.HashPassword = hash
-	if _, err := tx.Put(Key, &tmp); err != nil {
-		return false, err
-	}
-	if _, err := tx.Commit(); err != nil {
-		return false, err
-	}
-
-	return true, nil
 }

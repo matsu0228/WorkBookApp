@@ -24,14 +24,18 @@ const (
 	workbook_learning_content = "web/template/includeParts/workbook_learning_content.html"
 	workbook_share            = "web/template/includeParts/workbook_share.html"
 	workbook_question         = "web/template/includeParts/workbook_question.html"
+	not_found                 = "web/template/404.html"
+	error500                  = "web/template/500.html"
 
 	//ShowData用{{define "ここの名前"}}
+	Show_index            = "index"
 	Show_login            = "login"
 	Show_forgot_password  = "forgot_password"
 	Show_recover_password = "recover_password"
 	Show_account_create   = "account_create"
 	Show_home             = "home"
-
+	Show_404              = "404"
+	Show_500              = "500"
 	//表示メッセージ
 	Succes_account_create_message = "アカウント作成が完了しました。ログインして下さい。"
 	Succes_account_delete_message = "アカウントの削除が完了しました"
@@ -66,6 +70,8 @@ var (
 
 	//ページ本体
 	PageIndex            = []string{index}
+	Page404              = []string{head, script, not_found}
+	Page500              = []string{head, script, error500}
 	PageLogin            = []string{head, script, login}
 	PageForgotPassword   = []string{head, script, forgot_password}
 	PageRecoverPassword  = []string{head, script, recover_password}

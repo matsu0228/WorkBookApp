@@ -9,26 +9,24 @@ import (
 	"golang.org/x/oauth2/github"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
+	"html/template"
 	"io"
 	"log"
 	"mime/multipart"
+	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
-//クライアント
-type Client struct {
-	CloudStorage *storage.Client
-}
-
-//Oauth認証(Google)
+/*GoogleGetConnectはOauth認証に必要な設定情報を生成して、返す関数*/
 func GoogleGetConnect() *oauth2.Config {
 	config := &oauth2.Config{
-		ClientID:     "907386733410-poe2om4820040g0vbuug7iiin6jajfjt.apps.googleusercontent.com",
-		ClientSecret: "My6OndPCv4v6lx2igjxpVrZV",
+		ClientID:     "xxxx",
+		ClientSecret: "xxxx",
 		Scopes:       []string{"openid", "email", "profile"},
 		Endpoint:     google.Endpoint,
-		RedirectURL:  "http://localhost:8080/account/create/google",
+		RedirectURL:  "http://localhost:8080/login/google",
 	}
 	return config
 }
@@ -36,14 +34,14 @@ func GoogleGetConnect() *oauth2.Config {
 //Oauth認証(FaceBook)
 func FacebookGetConnect() *oauth2.Config {
 	config := &oauth2.Config{
-		ClientID:     "641206823488638",
-		ClientSecret: "f3053b7fe1d41fe7acbb682268d2ed02",
+		ClientID:     "xxxx",
+		ClientSecret: "xxxx",
 		Scopes:       []string{"email"},
 		Endpoint: oauth2.Endpoint{
 			AuthURL:  "https://www.facebook.com/dialog/oauth",
 			TokenURL: "https://graph.facebook.com/oauth/access_token",
 		},
-		RedirectURL: "http://localhost:8080/account/create/facebook",
+		RedirectURL: "http://localhost:8080/login/facebook",
 	}
 	return config
 }
@@ -51,27 +49,27 @@ func FacebookGetConnect() *oauth2.Config {
 //Oauth認証(github)
 func GithubGetConnect() *oauth2.Config {
 	config := &oauth2.Config{
-		ClientID:     "Iv1.503404aa1ff2e2e6",
-		ClientSecret: "112aefef6df4e5bd8d48c675390f6d2caad3b124",
+		ClientID:     "xxxx",
+		ClientSecret: "xxxx",
 		Scopes:       []string{"email"},
 		Endpoint:     github.Endpoint,
-		RedirectURL:  "http://localhost:8080/account/create/github",
+		RedirectURL:  "http://localhost:8080/login/github",
 	}
 	return config
 }
 
-/*CreationUrl()*/
+/*CreationUrlは*/
 func CreationUrl() map[string]string {
 	c := GoogleGetConnect()
-	GoogleUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
+	googleUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
 	c = FacebookGetConnect()
-	FacebookUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
+	facebookUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
 	c = GithubGetConnect()
-	GithubUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
-	return map[string]string{"google": GoogleUrl, "facebook": FacebookUrl, "github": GithubUrl}
+	githubUrl := c.AuthCodeURL(oauthStateString, oauth2.AccessTypeOffline)
+	return map[string]string{"google": googleUrl, "facebook": facebookUrl, "github": githubUrl}
 }
 
-//cloud storage クライアント作成
+//NewClient はCloudStorageのクライアントを生成して、返す関数
 func NewClient(ctx context.Context) (*Client, error) {
 	//client, err := storage.NewClient(ctx)
 	client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
@@ -92,11 +90,7 @@ func (c *Client) UploadImg(file multipart.File, fileHeader *multipart.FileHeader
 	objectName := fileHeader.Filename
 
 	writer := c.CloudStorage.Bucket(bucketName).Object(objectName).NewWriter(ctx)
-	defer func() {
-		if err := writer.Close(); err != nil {
-			log.Println(err)
-		}
-	}()
+	defer writer.Close()
 
 	writer.ContentType = fileHeader.Header.Get("Content-Type")
 	_, err := io.Copy(writer, file)
@@ -115,13 +109,125 @@ func HashFiled(filed string) ([]byte, error) {
 }
 
 /*CompareHashAndFiledは
-ハッシュ値とパスワード（文字列）を比較して、真偽値とエラーを返す関数*/
-func CompareHashAndFiled(hash []byte, filed string) (bool, error) {
+ハッシュ値とパスワード（文字列）を比較して、エラーを返す関数*/
+func CompareHashAndFiled(hash []byte, filed string) error {
 	err := bcrypt.CompareHashAndPassword(hash, []byte(filed))
 	if err != nil {
-		return false, err
+		return err
 	}
-	return true, nil
+	return nil
+}
+
+//ReadTemplate　は
+func ReadTemplate(w http.ResponseWriter, files []string, showPage string, date interface{}) {
+	//
+	t, err := template.ParseFiles(files...)
+	if err != nil {
+		ErrorLogOutput(err)
+		return
+	}
+	if err := t.ExecuteTemplate(w, showPage, date); err != nil {
+		ErrorLogOutput(err)
+		return
+	}
+}
+
+// ReadTemplateToIncludeFunction は
+func ReadTemplateToIncludeFunction(w http.ResponseWriter, files []string, showPage string, date interface{}, funcMap template.FuncMap) {
+	//
+	t, err := template.New(showPage).Funcs(funcMap).ParseFiles(files...)
+	if err != nil {
+		ErrorLogOutput(err)
+		return
+	}
+	if err := t.ExecuteTemplate(w, showPage, date); err != nil {
+		ErrorLogOutput(err)
+		return
+	}
+}
+
+//ConfirmationCookie は
+func ConfirmationCookie(w http.ResponseWriter, r *http.Request) (error, Cookies) {
+	//
+	cookie1, err := r.Cookie(F_user_name)
+	if err != nil {
+		return err, Cookies{}
+	}
+	cookie2, err := r.Cookie(F_image)
+	if err != nil {
+		return err, Cookies{}
+	}
+	cookie3, err := r.Cookie(F_user_id)
+	if err != nil {
+		return err, Cookies{}
+	}
+
+	//
+	c := Cookies{
+		UserName: cookie1,
+		Image:    cookie2,
+		UserID:   cookie3,
+	}
+
+	return nil, c
+}
+
+//CreateCookie は
+func CreateCookies(w http.ResponseWriter, r *http.Request, user UserAccount) Cookies {
+	//
+	cookie1 := http.Cookie{
+		Name:  F_user_name,
+		Value: user.Name,
+	}
+	cookie2 := http.Cookie{
+		Name:  F_image,
+		Value: user.ProfileImg,
+	}
+	cookie3 := http.Cookie{
+		Name:  F_user_id,
+		Value: strconv.Itoa(int(user.Id)),
+	}
+
+	//
+	http.SetCookie(w, &cookie1)
+	http.SetCookie(w, &cookie2)
+	http.SetCookie(w, &cookie3)
+	c := Cookies{
+		UserName: &cookie1,
+		Image:    &cookie2,
+		UserID:   &cookie3,
+	}
+
+	return c
+}
+
+//DiscardCookie は
+func DiscardCookie(w http.ResponseWriter, r *http.Request) error {
+	//
+	cookie1, err := r.Cookie(F_user_name)
+	if err != nil {
+		return err
+	}
+	cookie2, err := r.Cookie(F_image)
+	if err != nil {
+		return err
+	}
+	cookie3, err := r.Cookie(F_user_id)
+	if err != nil {
+		return err
+	}
+
+	//
+	cookie1.MaxAge = -1
+	cookie2.MaxAge = -1
+	cookie3.MaxAge = -1
+
+	//
+	http.SetCookie(w, cookie1)
+	http.SetCookie(w, cookie2)
+	http.SetCookie(w, cookie3)
+
+	return nil
 }
 
 /*ErrorHandlingは
@@ -148,4 +254,10 @@ func ErrorLogOutput(error interface{}) {
 	if err != nil {
 		log.Println(err)
 	}
+}
+
+/*ErrorHandlingは*/
+func ErrorHandling(err interface{}, w http.ResponseWriter, r *http.Request) {
+	ErrorLogOutput(err)
+	Show500Page(w, r, http.StatusInternalServerError)
 }
