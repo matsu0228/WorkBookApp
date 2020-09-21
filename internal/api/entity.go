@@ -24,7 +24,7 @@ type Repository interface {
 	SelectUserAccountMail(searchTarget string) (error, int64)
 
 	/*UpdateAccountPasswordは*/
-	UpdateUserAccountPassword(mail string, password string, userId string) error
+	UpdateUserAccountPassword(password string, userId string) error
 
 	//UpdateUserAccount　は登録されているユーザ情報を更新する関数
 	UpdateUserAccount(cookie *http.Cookie, updateAccount UserAccount) (error, UserAccount)

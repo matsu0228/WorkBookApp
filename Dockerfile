@@ -1,7 +1,7 @@
 FROM golang:latest
 
-RUN mkdir /go/src/work
+RUN mkdir /GolandProjects/WorkBookApp
 
-WORKDIR /go/src/work
+WORKDIR /GolandProjects/WorkBookApp
 
-ADD . /go/src/work
+ADD . /GolandProjects/WorkBookApp

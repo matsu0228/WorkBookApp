@@ -8,7 +8,6 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 	"golang.org/x/oauth2/google"
-	"google.golang.org/api/option"
 	"html/template"
 	"io"
 	"log"
@@ -71,8 +70,8 @@ func CreationUrl() map[string]string {
 
 //NewClient はCloudStorageのクライアントを生成して、返す関数
 func NewClient(ctx context.Context) (*Client, error) {
-	//client, err := storage.NewClient(ctx)
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
+	client, err := storage.NewClient(ctx)
+	//client, err := storage.NewClient(ctx, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}

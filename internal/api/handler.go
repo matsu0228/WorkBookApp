@@ -243,7 +243,7 @@ func (a *App) SendReissueEmail(w http.ResponseWriter, r *http.Request) {
 /*RecoverPasswordは*/
 func (a *App) RecoverPassword(w http.ResponseWriter, r *http.Request) {
 	//
-	mail, err := r.Cookie("mail")
+	_, err := r.Cookie("mail")
 	if err != nil {
 		ErrorHandling(err, w, r)
 		return
@@ -258,7 +258,7 @@ func (a *App) RecoverPassword(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//
-	err = a.DB.UpdateUserAccountPassword(mail.Value, password, userId.Value)
+	err = a.DB.UpdateUserAccountPassword(password, userId.Value)
 	if err != nil {
 		ErrorHandling(err, w, r)
 		return

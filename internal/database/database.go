@@ -5,7 +5,6 @@ import (
 	"cloud.google.com/go/datastore"
 	"context"
 	"google.golang.org/api/iterator"
-	"google.golang.org/api/option"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -18,8 +17,8 @@ type Client struct {
 
 //NewClient　はDataStoreのクライアントを生成する関数
 func NewClient(ctx context.Context) (*Client, error) {
-	//client, err := datastore.NewClient(ctx, api.Project_id)
-	client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
+	client, err := datastore.NewClient(ctx, api.Project_id)
+	//client, err := datastore.NewClient(ctx, api.Project_id, option.WithCredentialsFile("./apptestgo0000-bef404e886bb.json"))
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +139,7 @@ func (c *Client) SelectUserAccountMail(searchTarget string) (error, int64) {
 }
 
 /*UpdateAccountPasswordは*/
-func (c *Client) UpdateUserAccountPassword(mail string, password string, userId string) error {
+func (c *Client) UpdateUserAccountPassword(password string, userId string) error {
 	ctx := context.Background()
 
 	//クッキーにあるユーザIDを元に更新

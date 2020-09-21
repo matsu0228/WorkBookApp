@@ -9,6 +9,6 @@ services:
     tty: true
     # マウントディレクトリ指定
     volumes:
-      - .:/go/src/work
+      - .:/GolandProjects/WorkBookApp
     ports:
       - "8080:8080"
