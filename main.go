@@ -6,16 +6,14 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"os"
 )
-
-const PORT = ":8080"
 
 func main() {
 	err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("api起動完了: http:localhost%s", PORT)
 }
 
 func run() error {
@@ -37,5 +35,11 @@ func run() error {
 	app := api.NewApp(d, s)
 	router := api.Route(app)
 
-	return http.ListenAndServe(PORT, router)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	log.Printf("Listening on port %s", port)
+	return http.ListenAndServe(":"+port, router)
 }
