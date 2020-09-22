@@ -3,11 +3,12 @@ package api
 import (
 	"context"
 	"errors"
+	"net/http"
+	"strconv"
+
 	"github.com/google/go-github/github"
 	"github.com/huandu/facebook"
 	"google.golang.org/api/oauth2/v1"
-	"net/http"
-	"strconv"
 )
 
 //NewApp は
@@ -268,37 +269,12 @@ func (a *App) RecoverPassword(w http.ResponseWriter, r *http.Request) {
 
 //ExternalAuthenticationGoogleは
 func (a *App) ExternalAuthenticationGoogle(w http.ResponseWriter, r *http.Request) {
-	conf := GoogleGetConnect()
 	code := r.URL.Query()["code"]
 	if code == nil || len(code) == 0 {
 		err := errors.New("外部認証エラー")
 		ErrorHandling(err, w, r)
 	}
-	ctx := context.Background()
-	tok, err := conf.Exchange(ctx, code[0])
-	if err != nil {
-		ErrorHandling(err, w, r)
-		return
-	}
-	client := conf.Client(ctx, tok)
-
-	svr, err := oauth2.New(client)
-	ui, err := svr.Userinfo.Get().Do()
-	if err != nil {
-		ErrorHandling(err, w, r)
-		return
-	}
-
-	id, err := strconv.ParseInt(ui.Id, 10, 64)
-	if err != nil {
-		ErrorHandling(err, w, r)
-	}
-	user := UserAccount{
-		Id:         id,
-		Name:       ui.Name,
-		Mail:       ui.Email,
-		ProfileImg: ui.Picture,
-	}
+	user, err := AuthGoogle(code[0])
 
 	err = a.DB.SelectOauthAccount(user, "google_account")
 	if err == nil {
@@ -314,6 +290,34 @@ func (a *App) ExternalAuthenticationGoogle(w http.ResponseWriter, r *http.Reques
 	}
 	c := CreateCookies(w, r, user)
 	ReadTemplate(w, PageHome, Show_home, c)
+}
+
+func AuthGoogle(code string) (UserAccount, error) {
+	conf := GoogleGetConnect()
+	ctx := context.Background()
+	token, err := conf.Exchange(ctx, code)
+	if err != nil {
+		return UserAccount{}, err
+	}
+	service, err := oauth2.New(conf.Client(ctx, token))
+	if err != nil {
+		return UserAccount{}, err
+	}
+	user, err := service.Userinfo.Get().Do()
+	if err != nil {
+		return UserAccount{}, err
+	}
+
+	uid, err := strconv.ParseInt(user.Id, 10, 64)
+	if err != nil {
+		return UserAccount{}, err
+	}
+	return UserAccount{
+		Id:         uid,
+		Name:       user.Name,
+		Mail:       user.Email,
+		ProfileImg: user.Picture,
+	}, nil
 }
 
 //Oauth認証(登録)(FaceBook)
